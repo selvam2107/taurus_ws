@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<robot  name="wheelcheck" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<xacro:include filename="$(find hw_t)/urdf/tauruswheel.urdf.xacro"/>
+<xacro:include filename="$(find hw_t)/urdf/_d435i.urdf.xacro"/>
+    <link name="base_link">
+
+    </link>
+    
+    <link name="base_plate">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <geometry>
+                <mesh filename="package://hw_t/stl/chasi.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+                <texture filename=""/>
+            </material>
+        </visual>
+    
+    </link>
+    <joint name="base_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.16" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="base_plate"/>
+        
+    </joint>
+    <xacro:wheel wheel_prefix="left" parent_link="base_plate" invert="true">
+    <origin xyz="0.0 0.33 0.0" rpy="0.0 0.0 0.0"/>
+    </xacro:wheel>
+    <xacro:wheel wheel_prefix="right" parent_link="base_plate" invert="true">
+    <origin xyz="0.0 -0.33 0.0" rpy="0.0 0.0 0.0"/>
+    </xacro:wheel>
+       <link name="sick_link1">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+              <geometry>
+                <mesh filename="package://sick_scan/meshes/sick_tim_5xx.stl" scale="1 1 1"/>
+              </geometry>
+            <material name="">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+                <texture filename=""/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+
+                <box size="0.0 0.0 0.0"/>
+            </geometry>
+        </collision>
+    </link>
+    <joint name="sick_lidar1" type="fixed">
+        <origin xyz="0.582 0.4305 0.150" rpy="0 0 0.785398163"/>
+        <parent link="base_plate"/>
+        <child link="sick_link1"/>
+        <axis xyz="0.0 0.0 0.06246"/>
+        <!-- <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/> -->z
+    </joint>
+    <link name="sick_link2">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+              <geometry>
+                <mesh filename="package://sick_scan/meshes/sick_tim_5xx.stl" scale="1 1 1"/>
+              </geometry>
+            <material name="">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+                <texture filename=""/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+
+                <box size="0.0 0.0 0.0"/>
+            </geometry>
+        </collision>
+    </link>
+    <joint name="sick_lidar2" type="fixed">
+        <origin xyz="-0.582 -0.4305 0.150" rpy="0 0 -2.321287905"/>
+        <parent link="base_plate"/>
+        <child link="sick_link2"/>
+        <axis xyz="0.0 0.0 0.06246"/>
+        <!-- <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/> -->
+    </joint>
+    <link name="imu_link">
+    <visual>
+      <geometry>
+         <mesh filename="package://hw_t/stl/MTi_6xx.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="base_to_imu" type="fixed">
+    <origin xyz="0.582 -0.02 0.125" rpy="0 0 0"/>
+    <parent link="base_plate"/>
+    <child link="imu_link"/>
+    <!-- <origin xyz="0 0 0.5"/> origin xyz="0.582 -0.02 0.120" rpy="1.4 0 1.5708 -->
+  </joint>
+    <link name="camera_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+              <geometry>
+                <mesh filename="package://hw_t/stl/d435.dae" scale="1 1 1"/>
+              </geometry>
+            <material name="">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+                <texture filename=""/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+
+                <box size="0.0 0.0 0.0"/>
+            </geometry>
+        </collision>
+    </link>
+     <joint name="camera_joint" type="fixed">
+        <origin xyz="0.582 0.0 0.150" rpy="0 0 0"/>
+        <parent link="base_plate"/>
+        <child link="camera_link"/>
+        <axis xyz="0.0 0.0 0.0"/>
+         <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/> 
+    </joint>
+    <!-- <xacro:sensor_d435i parent="base_plate" use_nominal_extrinsics="true">
+      <origin xyz="0.582 0 0.150" rpy="0 0 0"/>
+    </xacro:sensor_d435i> -->
+    <!-- <link name="cam2_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+              <geometry>
+                <mesh filename="package://hw_t/stl/d435.dae" scale="1 1 1"/>
+              </geometry>
+            <material name="">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+                <texture filename=""/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+
+                <box size="0.0 0.0 0.0"/>
+            </geometry>
+        </collision>
+    </link>
+     <joint name="camera joint2" type="fixed">
+        <origin xyz="0.582 -0.02 0.120" rpy="1.4 0 1.5708"/>
+        <parent link="base_plate"/>
+        <child link="cam2_link"/>
+        <axis xyz="0.0 0.0 0.0"/>
+        <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/>
+    </joint> -->
+</robot>

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" >
+
+	<xacro:property name="caster_base_joint_x" value="-0.02626" />
+    <xacro:property name="caster_base_joint_z" value="-0.042385" />
+    <xacro:property name="caster_base_link_z" value="-0.05615" />
+
+<xacro:macro name="caster" params="caster_prefix parent_link *joint_pose">
+		<!-- Caster Wheel Link -->
+		<link name="${caster_prefix}_caster_link">
+			<visual>
+			<material name="Red"/>
+                <origin xyz="0 0 0" rpy="1.570796327 0 0" />
+				<geometry>
+					<mesh filename="package://bot/stl/oldtaurus/caswheel.dae" />
+				</geometry>
+			</visual>
+			<collision>
+                <origin xyz="0 0 0" rpy="1.570796327 0 0" />
+				<geometry>
+					<mesh filename="package://bot/stl/oldtaurus/caswheel.dae" />
+				</geometry>
+			</collision>
+		</link>
+
+		<!-- Caster Base Link -->
+        <link name="${caster_prefix}_caster_base">
+			<visual>
+			<material name="Green"/>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://bot/stl/oldtaurus/caster_base2.dae" />
+				</geometry>
+			</visual>
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://bot/stl/oldtaurus/caster_base2.dae" />
+				</geometry>
+			</collision>
+		</link>
+
+		<!-- Caster Base Link and Wheel Link Joint -->
+        <joint name="${caster_prefix}_cwheel" type="fixed">
+			<parent link="${caster_prefix}_caster_base"/>
+			<child link="${caster_prefix}_caster_link"/>
+			<origin xyz="${caster_base_joint_x} 0 ${caster_base_joint_z}" rpy="0 0 0" />
+			<axis xyz="0 1 0" rpy="0 0 0" />
+        	<!-- <dynamics friction="0.100" /> -->
+						
+
+		</joint>
+
+		<!-- Caster base and parent joint -->
+		<joint name="${caster_prefix}_caster" type="fixed">
+			<parent link="${parent_link}"/>
+			<child link="${caster_prefix}_caster_base"/>
+			<xacro:insert_block name="joint_pose"/>
+			<axis xyz="0 0 1" rpy="0 0 0" />       
+			<dynamics friction="0.100" />
+
+		</joint>
+
+	</xacro:macro>
+
+
+
+
+</robot>

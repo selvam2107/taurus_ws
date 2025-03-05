@@ -1,0 +1,3 @@
+float32 r_wheel
+float32 l_wheel
+float32 total_distance

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <rosparam file="$(find hw_t)/config/controller2.yaml" command="load"/>
+  <rosparam file="$(find hw_t)/config/joint_limits.yaml" command="load"/>
+
+  <arg name="model" default="$(find hw_t)/urdf/wheelcheck.urdf.xacro"/>
+  
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+   <!-- <param name="/taurus/mobile_base_controller/enable_odom_tf" type="bool" value="true"/> -->
+
+  <node name="moons_server" pkg="hw_t" type="moonsServer.py" output="screen"/>
+
+  <node name="taurus_node" pkg="hw_t" type="taurus_node" output="screen">
+     <remap from="/taurus/mobile_base_controller/cmd_vel" to="/robot/cmd_vel"/>
+   </node>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
+  </node>
+  <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" output="screen"></node> -->
+
+  
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bot)/config/nav_config.rviz"/> -->
+  
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+        args="
+        	/taurus/joints_update
+            /taurus/mobile_base_controller" >
+  </node>
+
+  <!--<node name="telop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py"/>-->
+ 
+</launch>

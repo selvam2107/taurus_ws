@@ -1,0 +1,6 @@
+int16 motor
+int16 entity
+int64 value1
+int64 value2
+---
+int16 result

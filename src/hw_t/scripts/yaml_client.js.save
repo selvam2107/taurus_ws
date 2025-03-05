@@ -1,0 +1,35 @@
+const ROSLIB = require('roslib');
+
+const ros = new ROSLIB.Ros({
+    url: 'ws://localhost:9090'  
+});
+
+ros.on('connection', function() {
+    console.log('Connected to ROS master');
+});
+
+ros.on('close', function() {
+    console.log('Disconnected from ROS master');
+});
+
+// Create a publisher to send footprint update requests
+const footprintUpdatePublisher = new ROSLIB.Topic({
+    ros: ros,
+    name: '/footprint_update_request',
+    messageType: 'std_msgs/String'
+});
+
+// Function to send footprint update request to server
+function sendFootprintUpdateRequest(updatedFootprint) {
+    const footprintMessage = new ROSLIB.Message({
+        data: JSON.stringify(updatedFootprint) 
+    });
+    footprintUpdatePublisher.publish(footprintMessage);
+    console.log('Footprint update request sent:', updatedFootprint);
+}
+
+const newFootprint = [
+    [-0.63,-0.52],[-0.63,0.52],[0.51,0.52],[0.51,0.59],[0.71,0.59],[0.71,-0.52]]
+
+sendFootprintUpdateRequest(newFootprint);
+

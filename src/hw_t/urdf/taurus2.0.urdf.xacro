@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<robot name="taurus" xmlns:xacro="http://ros.org/wiki/xacro">
+
+
+    <xacro:include filename="$(find bot)/urdf/taurus2.0_wheel.urdf.xacro" />
+    <xacro:include filename="$(find bot)/urdf/materials.urdf.xacro" />
+    <xacro:include filename="$(find bot)/urdf/_d435i.urdf.xacro"/>
+    <xacro:include filename="$(find bot)/urdf/sick_tim5xx.urdf.xacro"/>
+
+<!-- **********************Base Link********************** -->
+
+    <link name="base_link"/>
+    
+    <link name="wheel_centre_link"/>
+
+    <joint name="base_link_joint" type="fixed">
+        <origin xyz="0 0 0.145" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="wheel_centre_link" />
+    </joint>
+
+<!-- **********************Wheels********************** -->
+
+    <xacro:wheel wheel_prefix="left" parent_link="wheel_centre_link" invert="true">
+        <origin xyz="0 0.3515 0" rpy="0 0 0" />
+    </xacro:wheel>
+
+    <xacro:wheel wheel_prefix="right" parent_link="wheel_centre_link" invert="true">
+        <origin xyz="0 -0.3515 0" rpy="0 0 0" />
+    </xacro:wheel>
+<!-- **********************Rocker Arms********************** -->
+
+    <link name="left_rocker_arm">
+      <visual>
+        <origin rpy="1.570796327 0 -1.570796327" xyz="0 -0.240 -0.078"/>
+        <geometry>
+          <mesh filename="package://bot/stl/rocker_arm_LH.stl" scale="0.001 0.001 0.001"/> 
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <collision>
+        <origin rpy="1.570796327 0 -1.570796327" xyz="0 -0.240 -0.078"/>
+        <geometry>
+          <mesh filename="package://bot/stl/rocker_arm_LH.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
+    </link>  
+    <joint name="left_rocker_arm_joint" type="fixed"> <!--  -->
+        <origin xyz="0 0.315 0.0" rpy="0 0 0" />
+        <limit  lower="-0.18" upper="0.2" effort="10" velocity="1"/>
+        <axis xyz="0 1 0"/>
+        <parent link="wheel_centre_link" />
+        <child link="left_rocker_arm" />
+    </joint>
+    
+    <link name="left_rocker_bearing"/>
+    <joint name="left_rocker_bearing_joint" type="fixed"> <!--  -->
+        <origin xyz="0.194 0 0.0" rpy="0 0 0" />
+        <limit  lower="-0.18" upper="0.2" effort="10" velocity="1"/>
+        <axis xyz="0 1 0"/>
+        <parent link="left_rocker_arm" />
+        <child link="left_rocker_bearing" />
+    </joint>
+
+    <link name="right_rocker_arm">
+      <visual>
+        <origin rpy="1.570796327 0 -1.570796327" xyz="0 0.240 -0.078"/>
+        <geometry>
+          <mesh filename="package://bot/stl/rocker_arm_RH.stl" scale="0.001 0.001 0.001"/> 
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <collision>
+        <origin rpy="1.570796327 0 -1.570796327" xyz="0 0.240 -0.078"/>
+        <geometry>
+          <mesh filename="package://bot/stl/rocker_arm_RH.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
+    </link>  
+
+    <joint name="right_rocker_arm_joint" type="fixed"> <!--  -->
+        <origin xyz="0 -0.315 0.0" rpy="0 0 0" />
+        <limit  lower="-0.18" upper="0.2" effort="10" velocity="1"/>
+        <axis xyz="0 1 0"/>
+        <mimic joint="left_rocker_arm_joint"/>
+        <parent link="wheel_centre_link" />
+        <child link="right_rocker_arm" />
+    </joint>
+
+    <link name="right_rocker_bearing"/>
+    <joint name="right_rocker_bearing_joint" type="fixed"> <!--  -->
+        <origin xyz="0.194 0 0.0" rpy="0 0 0" />
+        <limit  lower="-0.18" upper="0.2" effort="10" velocity="1"/>
+        <axis xyz="0 1 0"/>
+        <mimic joint="left_rocker_bearing_joint"/>
+        <parent link="right_rocker_arm" />
+        <child link="right_rocker_bearing" />
+    </joint>
+
+<!-- **********************Base plate********************** -->
+
+    <link name="base_plate">
+      <visual>
+        <origin rpy="0 0 3.1415926535897931" xyz="0 0 -0.02"/>
+        <geometry>
+          <mesh filename="package://bot/stl/taurus2.0_chassis.stl" scale="0.001 0.001 0.001"/> 
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0"  />
+        <geometry>
+          <mesh filename="package://bot/stl/taurus2.0_chassis.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
+    </link> 
+
+    <joint name="base_plate_joint" type="fixed">
+        <origin xyz="-0.194 -0.315 -0.067" rpy="0 0 0" />
+        <limit  lower="-0.18" upper="0.2" effort="10" velocity="1"/>
+        <axis xyz="0 1 0"/>
+        <parent link="left_rocker_bearing" />
+        <child link="base_plate" />
+    </joint>
+
+
+<!-- **********************Battery********************** -->
+
+    <link name="battery">
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <box size="0.445 0.255 0.250"/> 
+        </geometry>
+        <material name="Black"/>
+      </visual>
+      
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0.515 0.175"/>
+        <geometry>
+          <box size="0.445 0.255 0.250"/> 
+        </geometry>
+        <material name="Black"/>
+      </collision>
+      
+      <inertial>
+        <mass value="50"/>
+        <inertia ixx="${50*(255*255+250*250)/12}" ixy="0.0" ixz="0.0" iyy="${50*(445*445+250*250)/12}" iyz="0.0" izz="${50*(255*255+445*445)/12}"/>
+      </inertial>
+    
+    </link>  
+
+    <joint name="battery_joint" type="fixed">
+        <origin xyz="-0.320 0 0.143" rpy="0 0 0" />
+        <parent link="base_plate" />
+        <child link="battery" />
+    </joint>
+
+<!-- **********************Lidar********************** -->
+    <xacro:sick_tim5xx name="sick_lidar1" parent="base_plate">
+      <origin xyz="0.582 -0.4305 0.150" rpy="3.1415926535897931 0 -0.785398163" />
+    </xacro:sick_tim5xx>
+
+    <xacro:sick_tim5xx name="sick_lidar2" parent="base_plate">
+      <origin xyz="-0.582 0.4305 0.150" rpy="3.1415926535897931 0 2.321287905" />
+    </xacro:sick_tim5xx>
+
+<!-- **********************Realsense Camera********************** -->
+    <link name="camera_mounting_link"/>
+
+    <joint name="camera_mounting_joint" type="fixed">
+        <origin xyz="0.586 0.089 0.252" rpy="0 0 0" />
+        <parent link="base_plate" />
+        <child link="camera_mounting_link" />
+    </joint>
+
+    <xacro:sensor_d435i parent="camera_mounting_link" use_nominal_extrinsics="true">
+      <origin xyz="0.010 0 -0.0125" rpy="0 0 0"/>
+    </xacro:sensor_d435i>
+</robot>
+
+

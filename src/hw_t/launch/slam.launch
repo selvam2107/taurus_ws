@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Arguments -->
+  <arg name="model" default="$(find hw_t)/urdf/wheelcheck.urdf.xacro"/>
+  <arg name="slam_methods" default="gmapping"/>
+  <arg name="configuration_basename" default="mapping.lua"/>
+  <arg name="open_rviz" default="true"/>
+  <include file="$(find hw_t)/launch/run1.launch"></include>
+  <!-- TurtleBot3 -->
+  <!-- <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
+    <arg name="model" value="$(arg model)" />
+  </include> -->
+
+  <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
+  <include file="$(find hw_t)/launch/mapping.launch">
+    <arg name="model" value="$(arg model)"/>
+    <arg name="configuration_basename" value="$(arg configuration_basename)"/>
+  </include>
+  <include file="$(find hw_t)/launch/navigation2.launch">
+    
+   </include>
+  <!-- rviz
+   <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find hw_t)/config/slam.rviz"/>
+  </group> -->
+</launch>

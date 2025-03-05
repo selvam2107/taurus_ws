@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<robot name="sick_lidar" xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- <xacro:include filename="$(find realsense2_description)/urdf/test_d435i_camera.urdf.xacro" /> -->
+  
+  <link name="base_link" />
+
+      <link name="sick_mounting_link">
+      <inertial>
+        <mass value="0.001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.000001" ixy="0.0" ixz="0.0"
+          iyy="0.000001" iyz="0.0" izz="0.000001" />
+      </inertial>
+    </link>
+    
+    <joint name="sick_mounting_joint" type="fixed">
+        <!-- <origin xyz="0.580 0.450 0.350" rpy="0 0 0.767944871" /> -->
+        <origin xyz="0.0 0.0 0.0" rpy="3.141592654 0 0" />
+        <parent link="base_link" />
+        <child link="sick_mounting_link" />
+    </joint>
+    
+    <link name="sick_lidar">
+    <visual>
+        <geometry>
+          <mesh filename="package://sick_scan/meshes/sick_tim_5xx.stl" />
+        </geometry>
+        <material name="blue" >
+          <color rgba="0 0.4 0 1" />
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://sick_scan/meshes/sick_tim_5xx.stl" />
+        </geometry>
+      </collision>
+    </link>
+    
+    <joint name="sick_lidar_joint" type="fixed">
+      <parent link="sick_mounting_link" />
+      <child link="sick_lidar" />
+      <origin rpy="0 0 0" xyz="0 0 0.05595"/>
+    </joint>
+
+</robot>

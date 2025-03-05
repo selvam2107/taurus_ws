@@ -1,0 +1,14 @@
+GlobalPlanner:
+  #basic parameters
+  default_tolerance: 5.0  #default is 0.0
+  use_dijkstra: false  #default is true
+  old_navfn_behavior: false  #default is false
+  use_quadratic: true  #default is true
+  use_grid_path: false  #default is false
+  allow_unknown: false  #default is true
+  lethal_cost: 253  #default is 253
+  neutral_cost: 50  #default is 50
+  cost_factor: 3  #default is 3
+
+  #debug parameters
+  publish_potential: True

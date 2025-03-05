@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<robot name="sick_tim5xx" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="sick_tim5xx" params="parent *origin name:=lidar color:=Blue">
+    <xacro:property name="M_PI" value="3.1415926535897931" />
+
+    <link name="${name}_mounting_link"/>
+
+    <joint name="${name}_mounting_joint" type="fixed">
+      <xacro:insert_block name="origin" />
+      <parent link="${parent}"/>
+      <child link="${name}_mounting_link" />
+    </joint>
+
+    <link name="${name}_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://sick_scan/meshes/sick_tim_5xx.stl" />
+        </geometry>
+        <material name="${color}"/>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://sick_scan/meshes/sick_tim_5xx.stl" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${name}_joint" type="fixed">
+      <parent link="${name}_mounting_link" />
+      <child link="${name}_link" />
+      <origin rpy="0 0 0" xyz="0 0 0.06246"/>
+    </joint>
+
+  </xacro:macro>
+
+</robot>

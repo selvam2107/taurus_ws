@@ -1,0 +1,340 @@
+#!/usr/bin/env python
+import rospy
+from smach import State,StateMachine
+from time import sleep
+import actionlib
+from move_base_msgs.msg import MoveBaseAction,MoveBaseGoal
+from actionlib_msgs.msg import GoalID
+import actionlib_msgs.msg
+from geometry_msgs.msg import Twist
+import redis
+
+from hw_t.msg import aruco_detectAction,aruco_detectGoal
+red=redis.Redis(host='localhost',port=6379)
+from std_msgs.msg import Int32
+# from periphery import GPIO
+import time
+import smach_ros
+# green_pin = GPIO(23,"out")
+# grey_pin = GPIO(24,"out")
+red2=redis.Redis(host='192.168.5.7',port=6379)
+import actionlib
+from hw_t.msg import distanceAction, distanceGoal
+# green_pin = GPIO(23,"out")
+def feedback_cb(msg):
+    print ('feedback received:', msg)
+
+# grey_pin = GPIO(24,"out")
+
+
+def donecb(goalstatus,result):
+	global done
+	
+	print("goal status: ",goalstatus)
+
+	done= True
+count=0
+waypoints=[]
+list1=[12,13]
+def movebase_client(x):
+            global waypoints,list1
+            m1=[]
+            file= open(r"/root/testbot_ws/src/hw_t/goals/goal_"+str(x)+".txt", "r")
+            l=[]
+            t1=()
+            t2=()
+            l3=[]
+            l4=[]
+            l5=[]
+            for i in range(0,10):
+                l=l+[file.readline()]
+            l=l[-1:-3:-1]
+            s=float(l[0][7:-1])
+            m=float(l[1][7:-1])
+            l3.append(m)
+            l3.append(s)
+            l3.append(0.0)
+            t1=(tuple(l3))
+            l2=[]
+            for i in range(0,6):
+                l2=l2+[file.readline()]
+            l2=l2[-1:-3:-1]
+            z=float(l2[0][7:-1])
+            w=float(l2[1][7:-1])
+            l4.append(0.0)
+            l4.append(0.0)
+            l4.append(w)
+            l4.append(z)
+            t2=(tuple(l4))
+            l5.append(t1)
+            l5.append(t2)
+            m1.append(l5)
+            return m1[0]
+for i in list1:
+       
+    waypoints.append(movebase_client(i))
+print(waypoints)
+
+class one(State):
+    def __init__(self,position,orientation):
+      
+        State.__init__(self,outcomes=['cancelled','success','success1'], input_keys=['input'])
+        self.client=actionlib.SimpleActionClient('move_base',MoveBaseAction)
+        self.client.wait_for_server()
+        #red.set("taurus","junk")
+
+        self.goal=MoveBaseGoal()
+        self.goal.target_pose.header.frame_id='map'
+        self.goal.target_pose.pose.position.x = position[0]
+        self.goal.target_pose.pose.position.y = position[1]
+        self.goal.target_pose.pose.position.z = position[2]
+        self.goal.target_pose.pose.orientation.x = orientation[0]
+        self.goal.target_pose.pose.orientation.y = orientation[1]
+        self.goal.target_pose.pose.orientation.z = orientation[2]
+        self.goal.target_pose.pose.orientation.w = orientation[3]
+
+
+
+    def execute(self, userdata):
+        sleep(1)
+        global done
+        done=False
+        self.client.send_goal(self.goal,done_cb=donecb)
+        print("--------")
+        while not done:
+            # print('goal not done')
+            if red.get("taurus")==b'pause':
+                print('cancel goal')
+                talker()
+                red.set("taurus","junk")
+                return 'cancelled'
+        self.client.wait_for_result()
+        rospy.loginfo("state one")
+        # s.userdata.inpt=int(input("enter:"))
+        return 'success'
+    
+class two(State):
+        
+        def __init__(self,position,orientation):
+            global done
+            done=False
+            State.__init__(self,outcomes=['cancelled','success','success1'], input_keys=['input'])
+            self.client=actionlib.SimpleActionClient('move_base',MoveBaseAction)
+            self.client.wait_for_server()
+            #red.set("taurus","junk")
+
+            self.goal=MoveBaseGoal()
+            self.goal.target_pose.header.frame_id='map'
+            self.goal.target_pose.pose.position.x = position[0]
+            self.goal.target_pose.pose.position.y = position[1]
+            self.goal.target_pose.pose.position.z = position[2]
+            self.goal.target_pose.pose.orientation.x = orientation[0]
+            self.goal.target_pose.pose.orientation.y = orientation[1]
+            self.goal.target_pose.pose.orientation.z = orientation[2]
+            self.goal.target_pose.pose.orientation.w = orientation[3]
+
+
+
+        def execute(self, userdata):
+            sleep(1)
+            global done
+            done=False
+          
+            self.client.send_goal(self.goal,done_cb=donecb)
+            print("--------")
+            while not done:
+                # print('goal not done')
+                if red.get("taurus")==b'pause':
+                    print('cancel goal')
+                    talker()
+                    red.set("taurus","junk")
+                    return 'cancelled'
+            # self.client.wait_for_result()
+            # red.set('qr','go')
+        
+            # while red.get('qr')!=b'success':
+            #     pass
+            rospy.loginfo("state one")
+            return 'success1'
+
+class qr_camera(State):
+        def __init__(self):
+            State.__init__(self,outcomes=['done','not done'])
+           
+         
+     
+        def execute(self, userdata):
+                red.set('a','go')
+                client = actionlib.SimpleActionClient('Table_dock', aruco_detectAction)
+                client.wait_for_server()
+                goal = aruco_detectGoal()
+                goal.detect = 1
+    # goal.number_of_minutes=7
+                result=0
+    
+      
+                client.send_goal(goal, feedback_cb=feedback_cb)
+                client.wait_for_result()
+                result = client.get_result()
+                print("v---------------------------------->",result)
+                
+                
+                if result=='Detection completed':
+
+                    print("entering to done")
+                    if red.get('distance')!=b'0':
+                        return 'not done'
+                    return 'done'
+                if red.get('distance')!=b'0':
+                    return 'not done'
+                    
+                
+                return 'done'
+class qr_camera2(State):
+        def __init__(self):
+            State.__init__(self,outcomes=['done','not done'])
+           
+         
+     
+        def execute(self, userdata):
+                red.set('task1','go')
+                while red2.get('task1')==b'go':
+                    pass
+                    
+                
+                return 'done'
+
+class three(State):
+ 
+    def __init__(self):
+        State.__init__(self,outcomes=['cancelled','success','success1'], input_keys=['input'])
+
+    def execute(self, userdata):
+        time.sleep(2)
+        red.set("v_dock","succes")
+        while red.get("v_dock")!=b"success":
+            pass
+        
+        return "success"
+class back(State):
+    def __init__(self):
+        State.__init__(self,outcomes=['success',"cancelled"])
+
+
+    def execute(self, userdata):
+        global count
+        cmd_vel_pub = rospy.Publisher('/robot/cmd_vel',Twist, queue_size=1)
+        twist = Twist()
+        time.sleep(7)
+        distance=red.get('distance')
+        # input("cvsdijh")
+        
+        distance=int(distance)
+        
+        sa=distance
+        while distance<=1800:
+            distance=red.get('distance')
+                
+            distance=int(distance)
+            print(distance,sa)
+            twist.linear.x=-0.1
+            cmd_vel_pub.publish(twist)
+        s1=red.get("dock")
+        count=int(s1)
+        count+=1
+        red.set("dock",str(count))
+        
+        # if int(red.get('distance'))<1800:
+        return 'success'
+
+
+            
+
+class pick(State):
+    def __init__(self):
+        State.__init__(self,outcomes=['picking'])
+
+
+    def execute(self, userdata):
+            red.set("conveyor","pick")
+            while red.get('conveyor')==b'pick':
+                pass
+            # green_pin.write(True)
+            # grey_pin.write(True) 
+            # while True:
+            #     if red.get("taurus_conv")=="stop":            
+            #         green_pin.write(False)
+            #         grey_pin.write(False)
+            #         red.set("taurus_conv","go")
+            #         break
+            # green_pin.write(False)
+            # grey_pin.write(False)
+            return 'picking'
+
+
+
+class drop(State):
+    def __init__(self):
+        State.__init__(self,outcomes=['picking'])
+
+
+    def execute(self, userdata):
+            red.set("conveyor","drop")
+            while red.get('conveyor')==b'drop':
+                pass
+            # green_pin.write(True)
+            # grey_pin.write(True) 
+            # while True:
+            #     if red.get("taurus_conv")=="stop":            
+            #         green_pin.write(False)
+            #         grey_pin.write(False)
+            #         red.set("taurus_conv","go")
+            #         break
+            # green_pin.write(False)
+            # grey_pin.write(False)
+            return 'picking'
+
+def talker():
+    pub_cancel_goal = rospy.Publisher('move_base/cancel', GoalID, queue_size=1)
+   
+    count = 0
+
+    rate = rospy.Rate(10) # 10hz
+    while not rospy.is_shutdown():
+        pub_cancel_goal.publish()
+        count+=1
+        if count >= 5:
+           
+            break
+       
+        rate.sleep()
+
+
+
+if __name__ == '__main__':
+    rospy.init_node('patrol')
+    global patrol
+    
+    patrol = StateMachine(['success','success1','cancelled'])
+    
+    with patrol:
+        print("state execution")
+        StateMachine.add('ONE',one(waypoints[0][0],waypoints[0][1]),transitions={'success1':'TWO','success':'TWO','cancelled':'ONE'},remapping={'input':'inpt'})
+        StateMachine.add('TWO',two(waypoints[1][0],waypoints[1][1]),transitions={'success1':'ONE','success':'ONE','cancelled':'TWO'},remapping={'input':'inpt'})
+        StateMachine.add('ONE_D',one(waypoints[0][0],waypoints[0][1]),transitions={'success1':'ONE_D','success':'CAMERA1','cancelled':'ONE_D'},remapping={'input':'inpt'})
+        StateMachine.add('TWO_D',two(waypoints[1][0],waypoints[1][1]),transitions={'success1':'ONE','success':'ONE','cancelled':'TWO_D'},remapping={'input':'inpt'})
+
+        StateMachine.add('CAMERA',qr_camera(),transitions={'done':'BACK','not done':'BACK'})
+        StateMachine.add('CAMERA1',qr_camera(),transitions={'done':'DROP','not done':'CAMERA1'})
+        # StateMachine.add('THREE',three(),transitions={'success1':'ONE','success':'ONE','cancelled':'THREE'},remapping={'input':'inpt'})
+        StateMachine.add('PICK',pick(),transitions={'picking':'BACK'})
+        StateMachine.add('DROP',drop(),transitions={'picking':'BACK1'})
+        StateMachine.add('BACK',back(),transitions={'success':'TWO'})
+        StateMachine.add('BACK1',back(),transitions={'success':'TWO_D'})
+            
+    sa=smach_ros.IntrospectionServer('s_server',patrol,'/SM_ROOT')
+    sa.start()
+    patrol.execute()
+    rospy.spin()
+    sa.stop()
+        

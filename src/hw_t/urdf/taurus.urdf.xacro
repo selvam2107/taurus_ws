@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<robot name="taurus" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find bot)/urdf/wheel.urdf.xacro" />
+    <xacro:include filename="$(find bot)/urdf/materials.urdf.xacro" />
+    <!-- <xacro:include filename="$(find bot)/urdf/_l515.urdf.xacro" /> -->
+    <xacro:include filename="$(find bot)/urdf/_d435i.urdf.xacro"/>
+
+
+    <link name="base_plate">
+      <visual>
+        <origin rpy="0 0 -1.5708" xyz="0 0 -0.025"/>
+        <geometry>
+          <mesh filename="package://bot/stl/Taurus chassis and lifting unit.stl" scale="0.001 0.001 0.001"/> 
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <collision>
+        <origin rpy="0 0 -1.5708" xyz="0 0 0"  />
+        <geometry>
+          <mesh filename="package://bot/stl/Taurus chassis and lifting unit.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
+    </link>  
+
+    <link name="base_link"/>
+
+    <joint name="base_link_joint" type="fixed">
+        <origin xyz="0 0 0.060" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="base_plate" />
+    </joint>
+
+    <xacro:wheel wheel_prefix="left" parent_link="base_plate" >
+        <origin xyz="0 0.370 0.068" rpy="0 0 0" />
+    </xacro:wheel>
+
+
+    <xacro:wheel wheel_prefix="right" parent_link="base_plate" >
+        <origin xyz="0 -0.370 0.068" rpy="0 0 0" />
+    </xacro:wheel>
+  <!-- CHECK: Dimensions of guard to be changed, hollow if possible -->
+
+    <link name="guard">
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0.515 0.175"/>
+        <geometry>
+          <box size="1.26 0.005 0.350"/> 
+        </geometry>
+        <material name="Blue"/>
+      </visual>
+      <visual>
+        <origin rpy="0 0 0" xyz="0 -0.515 0.175"/>
+        <geometry>
+          <box size="1.26 0.005 0.350"/> 
+        </geometry>
+        <material name="Blue"/>
+      </visual>
+      <visual>
+        <origin rpy="0 0 0" xyz="-0.6325 0.0 0.175"/>
+        <geometry>
+          <box size="0.005 1.03 0.350"/> 
+        </geometry>
+        <material name="Blue"/>
+      </visual>
+      <visual>
+        <origin rpy="0 0 0" xyz="0.6275 0.00 0.175"/>
+        <geometry>
+          <box size="0.005 1.03 0.350"/> 
+        </geometry>
+        <material name="Blue"/>
+      </visual>
+      
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0.515 0.175"/>
+        <geometry>
+          <box size="1.26 0.005 0.350"/> 
+        </geometry>
+        <material name="Blue"/>
+      </collision>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 -0.515 0.175"/>
+        <geometry>
+          <box size="1.26 0.005 0.350"/> 
+        </geometry>
+        <material name="Blue"/>
+      </collision>
+      <collision>
+        <origin rpy="0 0 0" xyz="-0.6325 0.0 0.175"/>
+        <geometry>
+          <box size="0.005 1.03 0.350"/> 
+        </geometry>
+        <material name="Blue"/>
+      </collision>
+      <collision>
+        <origin rpy="0 0 0" xyz="0.6275 0.00 0.175"/>
+        <geometry>
+          <box size="0.005 1.03 0.350"/> 
+        </geometry>
+        <material name="Blue"/>
+      </collision>
+    
+    </link>  
+
+    <joint name="guard_joint" type="fixed">
+        <origin xyz="0 0 -0.050" rpy="0 0 0" />
+        <parent link="base_plate" />
+        <child link="guard" />
+    </joint>
+    
+
+    <link name="laser1">
+      <visual>
+      <material name="Blue"/>
+        <origin rpy="0 0 -1.5708" xyz="0.084 -0.242 -0.098"/>
+        <geometry>
+          <mesh filename="package://bot/stl/RpLidar.stl" scale="0.001 0.001 0.001"/> 
+        </geometry>
+      </visual>
+    </link> 
+
+    <joint name="laser_joint" type="fixed">
+        <origin xyz="-0.610 0.0 0.328" rpy="0 0 0" />
+        <parent link="base_plate" />
+        <child link="laser1" />
+    </joint>
+    
+    <link name="sick_mounting_link">
+      <inertial>
+        <mass value="0.001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.000001" ixy="0.0" ixz="0.0"
+          iyy="0.000001" iyz="0.0" izz="0.000001" />
+      </inertial>
+    </link>
+    
+    <joint name="sick_mounting_joint" type="fixed">
+        <origin xyz="0.637 0.564 0.320" rpy="3.141592654 0 0.785398163" />
+        <parent link="base_plate" />
+        <child link="sick_mounting_link" />
+    </joint>
+    
+    <link name="sick_lidar">
+      <visual>
+        <geometry>
+          <mesh filename="package://sick_scan/meshes/sick_tim_5xx.stl" />
+        </geometry>
+        <material name="blue" >
+          <color rgba="0 0.4 0 1" />
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://sick_scan/meshes/sick_tim_5xx.stl" />
+        </geometry>
+      </collision>
+    </link>
+    
+    <joint name="sick_lidar_joint" type="fixed">
+      <parent link="sick_mounting_link" />
+      <child link="sick_lidar" />
+      <origin rpy="0 0 0" xyz="0 0 0.06246"/>
+    </joint>
+    
+  <!--*********************RealSense Camera*********************-->
+    <!-- <xacro:sensor_l515 name="camera" topics_ns="camera" parent="base_plate" use_nominal_extrinsics="true" publish_pointcloud="true" use_mesh="true">
+      <origin xyz="0.4425 0.2575 0.188" rpy="0 0 0" />
+    </xacro:sensor_l515>  -->
+    
+    <!-- <xacro:sensor_d435i name="camera" topics_ns="camera" parent="base_plate" use_nominal_extrinsics="true" publish_pointcloud="true" use_mesh="true">
+      <origin xyz="0.4425 0.2575 0.188" rpy="0 0 0" />
+    </xacro:sensor_d435i>  -->
+
+  <xacro:sensor_d435i parent="base_plate" use_nominal_extrinsics="true">
+      <origin xyz="0.640 0 0.195" rpy="0 0 0"/>
+    </xacro:sensor_d435i>
+  <!--
+    <xacro:sensor_l515 name="camera" topics_ns="camera" parent="base_plate" use_nominal_extrinsics="true" publish_pointcloud="true" use_mesh="true">
+      <origin xyz="0 0.385 0.325" rpy="0 0 0" />
+    </xacro:sensor_l515> 
+  -->
+
+</robot>

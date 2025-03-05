@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<robot name="taurus" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <material name="blue">
+	    <color rgba="0 0 0.8 1"/>
+    </material>
+
+    <material name="white">
+	    <color rgba="1 1 1 1"/>
+    </material>
+
+    <material name="black">
+	    <color rgba="0 0 0 1"/>
+    </material>
+
+    <material name="green">
+        <color rgba="0.0 0.8 0.0 1.0"/>
+    </material>
+
+    <link name="base_link">
+        <!--<visual>
+          <geometry>
+             <box size="0.24 0.24 0.001"/>
+          </geometry>
+          <material name="white"/>
+          <origin rpy="0 0 0" xyz="0 0 0.0005"/>
+          <material>
+            <color rgba="0 0 0.8 1" />
+          </material>
+        </visual> -->
+        <collision>
+          <origin rpy="0 0 0" xyz="0 0 0.0005"/>
+          <geometry>
+            <box size="0.22 0.22 0.001"/>
+          </geometry>
+        </collision>
+    </link>
+
+    <joint name="base_link_joint" type="fixed">
+        <origin xyz="0 0 0.026" rpy="0 0 -1.5708" />
+        <parent link="base_link" />
+        <child link="base_plate" />
+    </joint>
+
+    <link name="base_plate">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.026"/>
+      <geometry>
+        <mesh filename="package://bot/stl/Taurus chassis and lifting unit.stl" scale="0.001 0.001 0.001"/> 
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.03 0 -0.026"  />
+      <geometry>
+        <mesh filename="package://bot/stl/Taurus chassis and lifting unit.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    </link>   
+    
+    
+    <joint name="right_wheel_joint" type="fixed">
+        <origin xyz="-0.41 0.003 0" rpy="0 0 0" />
+        <parent link="base_plate" />
+        <child link="right_wheel" />
+        <axis xyz="-1 0 0" />
+        <limit effort="300" velocity="0.1" lower="-3.14" upper="3.14"/>
+        <dynamics damping="50" friction="1"/>
+    </joint>
+
+    <link name="right_wheel"> 
+    <visual>
+      <origin rpy="1.5708 0 1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://bot/stl/Taurus_tyre_wheel.stl" scale="0.001 0.001 0.001"/> 
+      </geometry>
+      <material name="green"/>
+      <color rgba="0.0 0.8 0.0 1.0"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://bot/stl/Taurus_tyre_wheel.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    </link>   
+    
+    <joint name="left_wheel_joint" type="fixed">
+        <origin xyz="0.292 -0.003 0" rpy="0 0 0" />
+        <parent link="base_plate" />
+        <child link="left_wheel" />
+        <axis xyz="-1 0 0" />
+        <limit effort="300" velocity="0.1" lower="-3.14" upper="3.14"/>
+        <dynamics damping="50" friction="1"/>
+    </joint>
+
+    <link name="left_wheel">
+    <visual>
+      <origin rpy="1.5708 0 1.5708" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://bot/stl/Taurus_tyre_wheel.stl" scale="0.001 0.001 0.001"/> 
+      </geometry>
+      <material name="green"/>
+      <color rgba="0.0 0.8 0.0 1.0"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://bot/stl/Taurus_tyre_wheel.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    </link>   
+    
+    <joint name="laser_joint" type="fixed">
+        <origin xyz="0 0.53 0.26" rpy="0 0 1.5708" />
+        <parent link="base_plate" />
+        <child link="laser" />
+    </joint>
+
+    <link name="laser">
+    <visual>
+      <origin rpy="0 0 -1.5708" xyz="0.084 -0.242 -0.098"/>
+      <geometry>
+        <mesh filename="package://bot/stl/RpLidar.stl" scale="0.001 0.001 0.001"/> 
+      </geometry>
+      <material name="green"/>
+      <color rgba="0.0 0.8 0.0 1.0"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.242 0.084 -0.098"  />
+      <geometry>
+        <mesh filename="package://bot/stl/RpLidar.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    </link>  
+    <!--  -->
+    
+</robot>

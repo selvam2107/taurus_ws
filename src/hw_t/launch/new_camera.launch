@@ -1,0 +1,31 @@
+<launch>
+
+  <!-- Starting various launch files for starting up the robot --> 
+  <!-- <include file="$(find innok_heros_driver)/launch/heros_all.launch" />
+  <include file="$(find innok_heros_navigation)/launch/innok_AngularBoundsFilter.launch" />
+  <include file="$(find innok_heros_navigation)/launch/innok_laserscan_multi_merger.launch" /> 
+  
+
+  <include file="$(find gps_module)/launch/start_map_server.launch"/>
+
+
+  <include file="$(find gps_module)/launch/with_map_move_base.launch" /> -->
+
+
+  <!--Run Navsat_transform and Move_base-->
+  <rosparam command="load" file="$(find hw_t)/config/ekf2.yaml" />
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true"/>
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+
+  <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+    <remap from="imu/data" to="imu/data"/>
+   
+
+  </node>
+
+</launch>

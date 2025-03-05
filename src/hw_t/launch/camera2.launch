@@ -1,0 +1,84 @@
+<launch>
+
+  
+  <arg name="unite_imu_method"          default="linear_interpolation"/>
+  <arg name="enable_gyro"               default="false"/>
+  <arg name="enable_accel"              default="false"/>
+  <arg name="enable_pointcloud"         default="true"/>
+  <arg name="enable_color"              default="true"/>
+  <arg name="publish_odom_tf"           default="false"/>  
+  <arg name="enable_depth"              default="true"/>
+  <arg name="filters"                   default="pointcloud"/>
+   <arg name="topic_odom_in"             default="/taurus/mobile_base_controller/odom"/>
+<arg name="offline"          default="false"/>
+    <include unless="$(arg offline)" 
+        file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="align_depth" value="true"/>
+         <arg name="topic_odom_in"            value="$(arg topic_odom_in)"/>
+        <arg name="linear_accel_cov" value="1.0"/>
+        <arg name="unite_imu_method" value="linear_interpolation"/>
+        <arg name="enable_color"             value="$(arg enable_color)"/>
+    <arg name="publish_odom_tf"          value="$(arg publish_odom_tf)"/>  
+    <arg name="enable_depth"             value="$(arg enable_depth)"/>
+    <arg name="enable_pointcloud"             value="$(arg enable_pointcloud)"/>
+    <arg name="infra_fps"             value="5"/>
+    <arg name="filters"                  value="pointcloud"/>
+    
+    <arg name="enable_infra"                  value="true"/>
+    <arg name="enable_infra1"                  value="true"/>
+    <arg name="enable_infra2"                  value="true"/>
+
+    <arg name="enable_gyro"              value="$(arg enable_gyro)"/>
+    <arg name="enable_accel"             value="$(arg enable_accel)"/>
+    <param name="initial_reset"          value="true"/>
+    </include>
+    
+     
+  <!-- <node pkg="imu_filter_madgwick" type="imu_filter_node"
+      name="imu_filter">
+    <param name="use_mag" value="false" />
+    <param name="publish_tf" value="false" />
+    <param name="fixed_frame" value="camera_link"/>
+    <param name="remove_gravity_vector" value="true" /> 
+     <param name="_world_frame" type="string" value="enu" />
+    <remap from="imu/data_raw" to="/camera/imu" />
+    <remap from="camera/imu" to="camera/imu1"/> 
+    <remap from="imu/data" to="/imu" />
+  </node> -->
+
+    <!-- <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
+        <arg name="args" value="delete_db_on_start"/>
+        <arg name="rgb_topic" value="/camera/color/image_raw"/>
+        <arg name="depth_topic" value="/camera/aligned_depth_to_color/image_raw"/>
+        <arg name="camera_info_topic" value="/camera/color/camera_info"/>
+        <arg name="depth_camera_info_topic" value="/camera/depth/camera_info"/>
+        <arg name="rtabmapviz" value="false"/>
+        <arg name="rviz" value="true"/>
+    </include> -->
+<!-- 
+    <include file="$(find robot_localization)/launch/ukf_template.launch"/>
+    <param name="/ukf_se/frequency" value="30"/>
+    <param name="/ukf_se/base_link_frame" value="base_link"/>
+    <param name="/ukf_se/odom0" value="/taurus/mobile_base_controller/odom"/>
+    <rosparam param="/ukf_se/odom0_config">[true,true,true,
+                                            true,true,true,
+                                            true,true,true,
+                                            true,true,true,
+                                            true,true,true]
+    </rosparam>
+    <param name="/ukf_se/odom0_relative" value="true"/>
+    <param name="/ukf_se/odom0_pose_rejection_threshold" value="10000000"/>
+    <param name="/ukf_se/odom0_twist_rejection_threshold" value="10000000"/>
+
+    <param name="/ukf_se/imu0" value="/imu/data"/>
+    <rosparam param="/ukf_se/imu0_config">[false, false, false,
+                                           true,  true,  true,
+                                           true,  true,  true,
+                                           true,  true,  true,
+                                           true,  true,  true]
+    </rosparam>
+    <param name="/ukf_se/imu0_differential" value="true"/>
+    <param name="/ukf_se/imu0_relative" value="false"/>
+    <param name="/ukf_se/use_control" value="false"/> 
+     <param name="/ukf_se/odom0_config" value="{true,true,true,}"/>  -->
+</launch>

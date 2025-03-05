@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<robot  xmlns:xacro="http://ros.org/wiki/xacro" name="taurus" >
+
+    <xacro:include filename="$(find bot)/urdf/oldcaster.urdf.xacro" />
+    <xacro:include filename="$(find bot)/urdf/oldwheel.urdf.xacro" />
+    <xacro:include filename="$(find bot)/urdf/materials.urdf.xacro" />
+
+
+    <link   name = "base_plate">
+        <visual>
+	<material name="White"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+            <mesh filename="package://bot/stl/oldtaurus/base_plate.stl" scale="0.001 0.001 0.001"  />
+        </geometry>
+        </visual>
+    <collision>
+      <geometry>
+            <mesh filename="package://bot/stl/oldtaurus/base_plate.stl" scale="0.001 0.001 0.001"  />
+      </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </collision>
+    </link>
+
+    <link   name =  "base_link"/>
+
+
+    <joint name = "base_link_joint"  type = "fixed">
+        <parent link="base_link"/>
+        <child link="base_plate"/>
+        <origin xyz="0.0 0.0 0.223" rpy="0 0 0" />
+        <axis xyz="0 1 0" rpy="0 0 0" />
+    </joint>
+
+    <xacro:wheel wheel_prefix="left" parent_link="base_plate" >
+        <origin xyz="0 0.325 -0.148" rpy="0 0 0" />
+    </xacro:wheel>
+
+
+    <xacro:wheel wheel_prefix="right" parent_link="base_plate" >
+        <origin xyz="0 -0.325 -0.148" rpy="0 0 0" />
+    </xacro:wheel>
+
+    <xacro:caster caster_prefix="front" parent_link="base_plate" >
+        <origin xyz="0.350 0 -0.148" rpy="0 0 0" />
+    </xacro:caster>
+
+    <xacro:caster caster_prefix="rear" parent_link="base_plate" >
+        <origin xyz="-0.350 0 -0.148" rpy="0 0 0" />
+    </xacro:caster>
+
+    <link name="laser">
+    <visual>
+	<material name="Blue"/>
+      <origin rpy="0 0 -1.5708" xyz="0.084 -0.242 -0.098"/>
+      <geometry>
+        <mesh filename="package://bot/stl/RpLidar.stl" scale="0.001 0.001 0.001"/> 
+      </geometry>
+    </visual>
+    </link> 
+
+    <joint name="laser_joint" type="fixed">
+        <origin xyz="0.36 0 0.053" rpy="0 0 3.14159265359" />
+        <parent link="base_plate" />
+        <child link="laser" />
+    </joint>
+</robot>

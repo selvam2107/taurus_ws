@@ -1,0 +1,5 @@
+<launch>
+<node name="keypad" pkg="keypad" type="teleop_keypad.py" output="screen"/>
+<node name="keypad1" pkg="hw_t" type="object_stop.py" output="screen"/>
+
+</launch>

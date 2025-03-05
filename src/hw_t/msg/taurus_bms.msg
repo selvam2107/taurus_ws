@@ -1,0 +1,9 @@
+float32 cumulative_voltage
+float32 acquisition_voltage
+float32 current
+float32 soc
+uint32 charge_state
+uint32 charge_mos_state
+uint32 discharge_mos_state
+uint32 bms_life
+uint32 remaining_capacity

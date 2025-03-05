@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="wheel" params="wheel_prefix parent_link *joint_pose invert:=false colour:=Red">
+    <link name="${wheel_prefix}_wheel_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.0"/>
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+        </inertial>
+        <visual name="">
+             <material name="${colour}">
+            </material>
+            <xacro:if value="${invert}">
+            <origin xyz="0.0 .0 0.0" rpy="0.0 0.0 3.145926535897931"/>
+            </xacro:if>
+            <xacro:unless value="${invert}">
+            <origin xyz="0.0 0 0.0"    rpy="0.0 0.0 0.0"/>
+            </xacro:unless>
+            <geometry>
+                <mesh filename="package://hw_t/stl/wheel.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="0.0 0.0 0.0"/>
+            </geometry>
+        </collision>
+    </link>
+    <joint name="${wheel_prefix}_wheel" type="continuous">
+        <parent link="${parent_link}"/>
+        <child link="${wheel_prefix}_wheel_link"/>
+        <xacro:insert_block name="joint_pose"/>
+        <axis xyz="0.0 1.0 0.0"/>
+    </joint>
+    
+    </xacro:macro>
+</robot>

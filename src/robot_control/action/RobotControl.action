@@ -1,0 +1,9 @@
+# Goal
+int32 command
+---
+# Result
+bool success
+string message
+---
+# Feedback
+string status

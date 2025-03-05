@@ -1,0 +1,23 @@
+footprint: [[-0.63,-0.52],[-0.63,0.52],[0.51,0.52],[0.51,0.59],[0.71,0.59],[0.71,-0.52]]
+shutdown_costmaps: false
+controller_frequency: 5
+planner_patience: 40
+max_planning_retries: 10
+controller_patience: 30
+conservative_reset_dist: 30
+planner_frequency: 0
+oscillation_timeout: 30
+oscillation_distance: 3
+allow_unknown: false
+recovery_behavior_enabled: true
+recovery_behaviors:
+  - name: conservative_reset
+    type: clear_costmap_recovery/ClearCostmapRecovery
+  - name: aggressive_reset
+    type: clear_costmap_recovery/ClearCostmapRecovery
+conservative_reset:
+  reset_distance: 5
+  layer_names:
+    - obstacle_layer
+  layer_names1:
+    - restricted_area_layer

@@ -1,0 +1,10 @@
+# Goal
+int32 qr
+
+---
+# Result
+string distance_reached
+
+---
+# Feedback
+string reached

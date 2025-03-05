@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<robot name="taurus" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find bot)/urdf/materials.urdf.xacro" />
+    
+    <xacro:macro name="sick_tim_5xx" params="name ros_topic min_angle:=-2.357 max_angle:=2.357 gaussian_noise:=0.01 samples:=271">
+    <xacro:sick_tim name="sick" ros_topic="${ros_topic}"
+      length="0.06" width="0.06" height="0.079" mass="0.150" z_offset="0.05595"
+      min_angle="${min_angle}" max_angle="${max_angle}"
+      min_range="0.05" max_range="4.0" gaussian_noise="${gaussian_noise}" samples="${samples}"
+      mesh="package://sick_scan/meshes/sick_tim_5xx.stl" />
+  </xacro:macro>
+  
+    <!-- z_offset: distance between base plate and laser center (= center of mesh) -->
+    <link name="base_link">
+      <inertial>
+        <mass value="0.001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.000001" ixy="0.0" ixz="0.0"
+          iyy="0.000001" iyz="0.0" izz="0.000001" />
+      </inertial>
+    </link>
+
+    <joint name="sick_joint" type="fixed">
+      <parent link="base_link" />
+      <child link="laser" />
+      <origin rpy="0 0 0" xyz="0 0 0.05595"/>
+    </joint>
+
+    <link name="laser">
+      <visual>
+        <geometry>
+          <mesh filename="package://sick_scan/meshes/sick_tim_5xx.stl" />
+        </geometry>
+        <material name="blue" >
+          <color rgba="0 0 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://sick_scan/meshes/sick_tim_5xx.stl" />
+        </geometry>
+      </collision>
+     
+    </link>
+
+
+</robot>

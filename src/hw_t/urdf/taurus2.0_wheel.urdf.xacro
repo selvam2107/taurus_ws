@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<robot name="wheel" xmlns:xacro="http://ros.org/wiki/xacro" >
+
+<xacro:macro name="wheel" params="wheel_prefix parent_link *joint_pose invert:=false color:=Red">
+	<!-- Wheel Link -->
+	<link name="${wheel_prefix}_wheel_link">
+		<visual>
+			<material name="${color}"/>
+			<xacro:if value="${invert}">
+			<origin xyz="0 0.0 0" rpy="0 0 3.1415926535897931" />
+			</xacro:if>
+			<xacro:unless value="${invert}">
+			<origin xyz="0 0.0 0" rpy="0 0 0" />
+			</xacro:unless> 
+			<geometry>
+				<mesh filename="package://bot/stl/taurus2.0_wheel_noTaper.stl" scale= "0.001 0.001 0.001"/>
+			</geometry> 
+		</visual>
+	    <collision>
+			<origin xyz="0 0 0" rpy="0 0 0" />
+			<geometry>
+				<mesh filename="package://bot/stl/taurus2.0_wheel_noTaper.stl" scale= "0.001 0.001 0.001"/>
+			</geometry>
+	    </collision>
+	</link>
+
+	<!-- Wheel Joint -->
+	<joint name="${wheel_prefix}_wheel" type="continuous">
+		<parent link="${parent_link}"/>
+		<child link="${wheel_prefix}_wheel_link"/>
+		<xacro:insert_block name="joint_pose"/>
+		<axis xyz="0 1 0" rpy="0 0 0" />
+	</joint>
+
+</xacro:macro>
+
+</robot>

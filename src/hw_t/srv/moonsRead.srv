@@ -1,0 +1,8 @@
+int64 prev1
+int64 prev2
+---
+int64 enc1
+int64 enc2
+int64 vel1
+int64 vel2
+int16 result

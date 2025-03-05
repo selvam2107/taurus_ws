@@ -1,0 +1,3 @@
+uint32 pack_voltage
+unint32 pack_current
+unint32 soc

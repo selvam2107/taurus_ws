@@ -1,0 +1,28 @@
+<launch>
+<arg name="model" default="$(find hw_t)/urdf/wheelcheck.urdf.xacro"/>
+<arg name="configuration_basename" default="mapping.lua"/>
+<arg name="set_base_frame" default="base_link"/>
+<arg name="set_odom_frame" default="odom"/>
+<arg name="set_map_frame"  default="map"/>
+<arg name="open_rviz" default="true"/>
+  <arg name="urdf_file" default="taurus" />
+  <arg name="lidar_port" default="/dev/lidar"/>
+  <arg name="lidar_ip" default="192.168.7.10"/>
+  <arg name="lidar_ip1" default="192.168.7.11"/>
+<param name="robot_description" command="$(find xacro)xacro '$(arg model)'"/>
+<node pkg="tf" type="static_transform_publisher" name="link2_broadcaster" args="0 0 0.1 0 0 0 1 base_link camera_link 100" />
+
+  <include file="$(find sick_scan)/launch/sick_tim_5xx_twin.launch">
+    <arg name="hostname1" value="$(arg lidar_ip)"/>
+    <!-- <arg name="hostname2" value="$(arg lidar_ip1)"/> -->
+  </include>
+  <!-- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/> 
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" output="screen"/> -->
+<node pkg="gmapping" type="slam_gmapping" name="slam_gmapping"  output="screen">
+<param name="base_frame" value="$(arg set_base_frame)"/>
+<param name="odome_frame"  value="$(arg set_odom_frame)"/>
+<param name="map_frame"  value="$(arg set_map_frame)"/>
+<param name="lstep" value="0.01"/>
+<rosparam command="load"  file="$(find hw_t)/config/gmapping.yaml"/>
+</node>
+</launch>

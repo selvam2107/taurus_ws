@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>robot_control</name>
+  <version>0.0.0</version>
+  <description>The robot_control package</description>
+
+  <!-- Maintainers -->
+  <maintainer email="product3@todo.todo">product3</maintainer>
+
+  <!-- License -->
+  <license>TODO</license>
+
+  <!-- Build tool -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Build dependencies -->
+  <build_depend>actionlib</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>message_generation</build_depend> <!-- For generating messages and actions -->
+  <build_depend>robot_control_msgs</build_depend> <!-- Custom message package -->
+
+  <!-- Build export dependencies -->
+  <build_export_depend>actionlib</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+  <build_export_depend>message_generation</build_export_depend>
+  <build_export_depend>robot_control_msgs</build_export_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+
+  <!-- Runtime dependencies -->
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>rosnodejs</exec_depend> <!-- For running the ROS node in JavaScript -->
+
+  <!-- Export (if applicable, other tools can request additional information here) -->
+  
+  <export>
+    <message_generation/>
+  </export>
+</package>

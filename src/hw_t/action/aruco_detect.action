@@ -1,0 +1,10 @@
+# Goal
+int32 detect
+
+---
+# Result
+string distance_reached
+
+---
+# Feedback
+string reached

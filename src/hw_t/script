@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+import rospy
+from simulation.srv import lis
+
+def call_service():
+    rospy.wait_for_service('get_list')
+    try:
+        service_proxy = rospy.ServiceProxy('get_list', lis)
+        # Create your list
+        list1 = [2,3]
+        # Call the service with the list
+        response = service_proxy(list1)
+        print("Service response:", response.success)
+    except rospy.ServiceException as e:
+        print("Service call failed:", e)
+
+if __name__ == "__main__":
+    rospy.init_node('client_node')
+    # while not rospy.is_shutdown():
+    call_service()

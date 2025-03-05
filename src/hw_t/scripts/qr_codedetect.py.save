@@ -1,0 +1,123 @@
+#!/usr/bin/env python
+
+import rospy
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+import cv2
+from geometry_msgs.msg import Twist
+import numpy 
+import redis
+red= redis.Redis(host= 'localhost',port= '6379')
+import time
+# from pypylon import pylon
+from pyzbar.pyzbar import decode
+class QRCodeDetector:
+    def __init__(self):
+        rospy.init_node('qr_code_detector', anonymous=True)
+
+        self.bridge = CvBridge()
+
+        self.image_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.image_callback)
+
+        # Physical size of the QR code in meters (replace with the actual size)
+        self.qr_code_size = 30  # Assume the QR code size is 10 cm
+        self.cmd_vel_pub = rospy.Publisher('/robot/cmd_vel',Twist, queue_size=1)
+        self.twist = Twist()
+        
+    def image_callback(self, data):
+        try:
+            global red
+            # print("fwejhbf") 
+            image = self.bridge.imgmsg_to_cv2(data)
+            cv_image = self.bridge.imgmsg_to_cv2(data, 'bgr8')
+            h,w,g=cv_image.shape
+            my=h/2
+            mx=w/2
+            x=0
+            y=0
+            w=0
+            h=0
+            midpoint_x=0
+            gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
+            _,thresh = cv2.threshold(gray, 90, 255, cv2.THRESH_BINARY)
+            try:
+                # print('before inside the decode program')
+                #start = time.time()
+                #out = read_barcodes(thresh)
+                
+                barcodes = decode(thresh)
+                # print(barcodes)
+                if barcodes:
+                    
+                    for barcode in barcodes:
+                        x, y , w, h = barcode.rect
+                        #1
+                        barcode_info = barcode.data.decode('utf-8')
+                        cv2.rectangle(image, (x, y),(x+w, y+h), (0, 0, 255), 2)
+            
+                        #2
+                        font = cv2.FONT_HERSHEY_DUPLEX
+                        cv2.putText(image, barcode_info, (x + 6, y - 6), font, 1.0, (0, 0, 255), 2)
+                        print('barcode data:',barcode.data)
+                        print('barcode type:',barcode.type)
+                        midpoint_x=x+w
+                        distance=red.get('distance')
+                        distance=int(distance)
+                        if red.get('qr')==b'go':
+                            if 175<=distance<=185:
+                                self.twist.linear.x = 0.02
+                                self.cmd_vel_pub.publish(self.twist)
+                                time.sleep(2)
+                                self.twist.linear.x = 0.02
+                                self.cmd_vel_pub.publish(self.twist)
+                                time.sleep(2)
+
+                                print("success")
+                                print('stop')
+                                
+                                self.twist.linear.x = 0
+                                self.twist.angular.z = 0 
+                                # if mx>(midpoint_x):
+                                #     self.twist.angular.z = 0.02
+                                #     print("adjusting")
+                                # elif mx<(midpoint_x):
+                                #     self.twist.angular.z = -0.02
+                                #     print("adjusting")
+                                red.set('qr','success')
+                            elif (midpoint_x-50)<=mx<=(midpoint_x+40):
+                                self.twist.linear.x = 0.05
+                                self.twist.angular.z = 0
+                                print("go straight")
+                            elif mx>(midpoint_x+50):
+                                self.twist.angular.z = 0.02
+                                print("turn left")
+                            elif mx<(midpoint_x-50):
+                                self.twist.angular.z = -0.02
+                                print("turn right")
+                      
+                    self.cmd_vel_pub.publish(self.twist)
+
+                    #cv2.circle(image,(x+w/2,y+h/2),5,(255,0,255),10)
+                #total_time = (time.time() - start)
+                #print('**********Total time ******',total_time)
+                # print('after inside the decode program')
+                
+                print(midpoint_x,mx)
+                
+                # cv2.namedWindow("frame",cv2.WINDOW_NORMAL)
+                # cv2.imshow('frame',image)
+                # cv2.waitKey(1)  
+            except Exception as e:
+                print(e)
+                
+        
+        except Exception as e:
+            #rospy.logerr(f"Error processing image: {str(e)}")
+            pass
+
+if __name__ == '__main__':
+    try:
+        qr_detector = QRCodeDetector()
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        pass

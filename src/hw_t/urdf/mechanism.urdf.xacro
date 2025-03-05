@@ -1,0 +1,144 @@
+<robot name="crank">
+  <link name="link1"> <!-- left most red link in the animation -->
+    <inertial>
+      <mass value="100.0" />
+      <!-- center of mass (com) is defined w.r.t. link local coordinate system -->
+      <origin xyz="0 0 0" /> 
+      <inertia  ixx="10.0" ixy="0.0"  ixz="0.0"  iyy="10.0"  iyz="0.0"  izz="10.0" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.25" rpy="0 0 0" />
+      <geometry>
+        <box size="0.1 0.1 0.5"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.025" rpy="0 0 0" />
+      <geometry>
+        <box size="1.0 1.0 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link1_link2_joint" type="continuous">
+    <parent link="link1" />
+    <child link="link2" />
+    <origin xyz="0 0 0.5" rpy="0 0 0" />
+    <axis xyz="0 1 0"/>
+  </joint>
+  <link name="link2"> <!-- blue link in the animation -->
+    <inertial>
+      <mass value="1.0" />
+      <!-- center of mass (com) is defined w.r.t. link local coordinate system -->
+      <origin xyz="0.1 0 0" /> 
+      <inertia  ixx="0.01" ixy="0.0"  ixz="0.0"  iyy="0.01"  iyz="0.0"  izz="0.01" />
+    </inertial>
+    <visual>
+      <origin xyz="0.1 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.2 0.05 0.05"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.1 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.2 0.05 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link2_link3_joint" type="continuous">
+    <parent link="link2" />
+    <child link="link3" />
+    <origin xyz="0.2 0 0" rpy="0 0 0" />
+    <axis xyz="0 1 0"/>
+  </joint>
+  <link name="link3"> <!-- red sliding link in the animation -->
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0.25 0 0" /> 
+      <inertia  ixx="0.01" ixy="0.0"  ixz="0.0"  iyy="0.01"  iyz="0.0"  izz="0.01" />
+    </inertial>
+    <visual>
+      <origin xyz="0.25 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.5 0.05 0.05"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.25 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.5 0.05 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link3_link4_joint" type="continuous">
+    <parent link="link3" />
+    <child link="link4" />
+    <origin xyz="0.5 0 0" rpy="0 0 0" />
+    <axis xyz="0 1 0"/>
+  </joint>
+  <link name="link4"> <!-- right most gray link in the animation -->
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 0 0" /> 
+      <inertia  ixx="0.01" ixy="0.0"  ixz="0.0"  iyy="0.01"  iyz="0.0"  izz="0.01" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <sphere radius="0.1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <sphere radius="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="link4_link5_joint" type="prismatic">
+    <parent link="link4" />
+    <child link="link5" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="1 0 0"/>
+    <limit upper="0.4" lower="0" effort="1000.00" velocity="1000.00"/>
+  </joint>
+  <link name="link5"> <!-- right most gray link in the animation -->
+    <inertial>
+      <mass value="100.0" />
+      <origin xyz="0 0 0" /> 
+      <inertia  ixx="10.0" ixy="0.0"  ixz="0.0"  iyy="10.0"  iyz="0.0"  izz="10.0" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.2 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.4 0.1 0.1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.475" rpy="0 0 0" />
+      <geometry>
+        <box size="1.0 1.0 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="link1">
+    <turnGravityOff>false</turnGravityOff>
+    <material>Gazebo/Red</material>
+  </gazebo>
+  <gazebo reference="link2">
+    <turnGravityOff>true</turnGravityOff>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  <gazebo reference="link3">
+    <turnGravityOff>true</turnGravityOff>
+    <material>Gazebo/Red</material>
+  </gazebo>
+  <gazebo reference="link4">
+    <turnGravityOff>true</turnGravityOff>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  <gazebo reference="link5">
+    <turnGravityOff>false</turnGravityOff>
+    <material>Gazebo/Gray</material>
+  </gazebo>
+</robot>

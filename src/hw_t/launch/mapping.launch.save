@@ -1,0 +1,24 @@
+<launch>
+<arg name="model" default="find hw_t/urdf/wheelcheck.urdf.xacro"/>
+<arg name="configuration_basename" default="mapping.lua"/>
+<arg name="set_base_frame" default="base_link"/>
+<arg name="set_odom_frame" default="odom"/>
+<arg name="set_map_frame"  default="map"/>
+<arg name="open_rviz" default="true"/>
+  <arg name="urdf_file" default="taurus" />
+  <arg name="lidar_port" default="/dev/lidar"/>
+  <arg name="lidar_ip" default="192.168.7.11"/>
+
+  <include file="$(find sick_scan)/launch/sick_tim_5xx
+.launch">
+    <arg name="hostname" value="$(arg lidar_ip)"/>
+  </include>
+
+
+<node pkg="gmapping" type="slam_gmapping" name="slam_gmapping"  output="screen">
+<param name="base_frame" value="$(arg set_base_frame)"/>
+<param name="odome_frame"  value="$(arg set_odom_frame)"/>
+<param name="map_frame"  value="$(arg set_map_frame)"/>
+<rosparam command="load"  file="$(find hw_t)/config/gmapping.yaml"/>
+</node>
+</launch>

@@ -1,0 +1,79 @@
+# costmap_common_params.yaml
+
+global_frame: map
+# robot_base_frame: base_link
+transform_tolerance: 0.5
+resolution: 0.05
+obstacle_range: 10.0
+raytrace_range: 10.0
+inflation_radius: 0.2
+cost_scaling_factor: 0.75
+allow_unknown: false 
+# Common plugins for both global and local costmaps
+
+plugins:
+  - {name: static_layer1, type: "costmap_2d::StaticLayer"}
+  - {name: static_layer2, type: "costmap_2d::StaticLayer"}
+  - {name: obstacle_layer, type: "costmap_2d::ObstacleLayer"}
+  - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+
+# Static Layer 1 - Main navigation map
+static_layer1:
+  map_topic: /map
+  lethal_cost_threshold: 100
+  unknown_cost_value: -1
+  track_unknown_space: true
+  combination_method: 1  # Use maximum cost
+
+# Static Layer 2 - Restricted area map
+static_layer2:
+  map_topic: /map2  # Your restricted area map topic
+  lethal_cost_threshold: 100
+  unknown_cost_value: -1
+  track_unknown_space: true
+  combination_method: 1  # Use maximum cost
+
+# Obstacle Layer for dynamic obstacles from LiDAR
+obstacle_layer:
+  enabled: true
+  observation_sources: sick_lidar1 sick_lidar2 #rs_depth
+  obstacle_keep_time:  0.5 # Obstacles are kept for 0.5 seconds after last detection
+
+  sick_lidar1:
+    sensor_frame: sick_link1
+    data_type: LaserScan
+    topic: /scan
+    marking: true
+    clearing: true
+    observation_persistence: 0
+    expected_update_rate: 0.0
+    max_obstacle_height: 3.0
+    min_obstacle_height: -3.0
+
+  sick_lidar2:
+    sensor_frame: sick_link2
+    data_type: LaserScan
+    topic: /scan_2
+    marking: true
+    clearing: true
+    observation_persistence: 0.0
+    expected_update_rate: 0.0
+    max_obstacle_height: 3.0
+    min_obstacle_height: -3.0
+  rs_depth:
+    sensor_frame: camera_link
+    data_type: PointCloud2
+    topic: /camera/depth/color/points
+    marking: true
+    clearing: true
+    observation_persistence: 0
+    # obstacle_keep_time: 40
+    expected_update_rate: 0.0
+    max_obstacle_height: 0.8
+    min_obstacle_height: 0.01    
+    obstacle_range: 2.0 
+
+# Inflation Layer - Adds a buffer zone around obstacles
+inflation_layer:
+  inflation_radius: 0.7
+  cost_scaling_factor: 0.75
