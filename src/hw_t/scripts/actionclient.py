@@ -24,6 +24,8 @@ def call_dock():
     result = 0
     goal = aruco_detectGoal()
     goal.detect = 1
+    rospy.set_param("/distance_goal_qr",goal.detect )
+
     client3.send_goal(goal, feedback_cb=feedback_cb)
     client3.wait_for_result()
     result = client3.get_result()

@@ -38,6 +38,12 @@ class motoraction:
             distance=red.get("distance")
             distance=int(distance)
             while distance<3000:
+                r=rospy.get_param("/distance_goal_qr", self.goal)
+                if r==0:
+                    self.a_server.set_preempted()
+                    self.detecting = False
+                    print("soho")
+                    return
                 rospy.Subscriber("/scan_2", LaserScan, self.callback)
                 time.sleep(0.25)
                 print(no_obstacle)

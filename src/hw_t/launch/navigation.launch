@@ -66,7 +66,7 @@
   <include file="$(find hw_t)/launch/camera2.launch"/>
     <node pkg="hw_t" type="dep.py" name="distance"></node>
  <node pkg="hw_t" type="b.py" name="docking"></node>
- <!-- <node pkg="hw_t" type="back_action.py" name="back"></node> -->
+ <node pkg="hw_t" type="back_action.py" name="back"></node>
  <node pkg="hw_t" type="conveyor_red.py" name="conveyor"></node>
  <node pkg="hw_t" type="taurusdata1.py" name="data_storing"></node>
  <node pkg="hw_t" type="send_initialpose.py" name="auto_pose"></node>
