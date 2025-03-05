@@ -18,7 +18,7 @@ def call_server():
     result = client2.get_result()
     print("the result is", result.distance_reached)
 def call_dock():
-    client3 = actionlib.SimpleActionClient('back', aruco_detectAction)
+    client3 = actionlib.SimpleActionClient('Table_dock', aruco_detectAction)
     client3.wait_for_server()
     goal = aruco_detectGoal()
     result = 0

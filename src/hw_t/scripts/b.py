@@ -68,15 +68,19 @@ class ScanActionServer:
         #     self.detecting = False
         if red.get("stop")==b"false":
              self.detecting = False
+        s=rospy.get_param("/distance_goal_qr", self.goal)
+        print(s)
+        if s==0:
+            self.detecting = False
 
         for i, range_distance in enumerate(scan_data.ranges):
             angle = scan_data.angle_min + i * scan_data.angle_increment
             # distance = red.get('distance')
             # distance=int(distance)
-            s=rospy.get_param("/distance_goal_qr", self.goal)
-            print(s)
-            if s==0:
-                self.detecting = False
+            # s=rospy.get_param("/distance_goal_qr", self.goal)
+            # print(s)
+            # if s==0:
+            #     self.detecting = False
 
             if (distance <900):
                 if 0.6<=angle<=0.62 and range_distance>1.5 and (red.get('a')!=b'go'):
