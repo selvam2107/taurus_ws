@@ -18,7 +18,7 @@ class ImageListener:
         try:
             rospy.wait_for_message(self.topic, msg_Image, timeout=timeout)
             # rospy.loginfo("Topic '{self.topic}' is actively publishing.")
-            re="camers is OK fine"
+            re="camera is healthy"
             self.pub.publish(re)
             self.sub = rospy.Subscriber(topic, msg_Image, self.imageDepthCallback)
         except rospy.ROSException:
@@ -33,7 +33,7 @@ class ImageListener:
     def imageDepthCallback(self, data):
         print("sij")
         try:
-            re="camers is ok"
+            re="camera is healthy"
             self.pub.publish(re)
             twist=Twist()
             cmd_vel_pub = rospy.Publisher('/robot/cmd_vel',Twist, queue_size=1)

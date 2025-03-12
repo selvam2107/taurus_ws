@@ -138,7 +138,7 @@
         </collision>
     </link>
      <joint name="camera_joint" type="fixed">
-        <origin xyz="0.582 0.0 0.150" rpy="0 0 0"/>
+        <origin xyz="0.582 0.0 0.75" rpy="0 0 0"/>
         <parent link="base_plate"/>
         <child link="camera_link"/>
         <axis xyz="0.0 0.0 0.0"/>

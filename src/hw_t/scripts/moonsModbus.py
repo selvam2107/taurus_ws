@@ -155,7 +155,7 @@ def readAlarm(slave):
             input("press any key to continue---")
         if len(error)==0:
             pub.publish("--------motor connected----")
-            pub1.publish("----motor is healthy----")
+            pub1.publish("motor is healthy")
         for i in error:
 
             if i==20:

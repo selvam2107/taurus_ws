@@ -15,11 +15,11 @@ class ImageListener:
         self.bridge = CvBridge() 
         s=rospy.get_published_topics()
         self.pub=rospy.Publisher("lidar_status",String,queue_size=10)
-        # print("dihjb")
+        print("dihjb")
         try:
             rospy.wait_for_message(self.topic, LaserScan, timeout=timeout)
-            # rospy.loginfo("Topic '{self.topic}' is actively publishing.")
-            re="lidar is OK "
+            rospy.loginfo("Topic '{self.topic}' is actively publishing.")
+            re="lidar is healthy "
             self.pub.publish(re)
             self.sub = rospy.Subscriber(topic, LaserScan, self.imageDepthCallback)
         except rospy.ROSException:
@@ -34,7 +34,7 @@ class ImageListener:
     def imageDepthCallback(self, data):
         print("sij")
         try:
-            re="lidar is ok"
+            re="lidar is healthy"
             self.pub.publish(re)
          
             # if (cv_image[pix[1], pix[0]])<=180:
