@@ -53,6 +53,7 @@ class ImageListener:
             #     twist.linear.x = 0.02
             # cmd_vel_pub.publish(twist)
         except CvBridgeError as e:
+            red.set('distance',0)
             print(e)
             return
 
