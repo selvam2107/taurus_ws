@@ -27,9 +27,9 @@ def callback(msg):
             s=rospy.get_param("/lidar_camera_reset")
             if s==1:  # Only print recovery message once
                 print("✅ Lidar is working fine.")
-                pub.publish("lidar is healthy")  # Publish only once
+                pub.publish("lidar is healthy")  # Publish only once-
                 re="camera is healthy"
-                pub1.publish("lidar is healthy")
+                pub1.publish("camera is healthy")
                 # warning_active = False  # Reset state
         except:
             rospy.set_param("/lidar_camera_reset",1 )
@@ -38,7 +38,7 @@ rospy.init_node("warning_listener", anonymous=True)
 
 # Initialize Publisher after node starts
 pub = rospy.Publisher("lidar_status1", String, queue_size=10)
-pub1 = rospy.Publisher("camera_status2", String, queue_size=10)
+pub1 = rospy.Publisher("camera_status1", String, queue_size=10)
 
 # Subscribe to ROS logs
 rospy.Subscriber("/rosout", Log, callback)

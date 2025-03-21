@@ -37,9 +37,37 @@ class motoraction:
         twist = Twist()
         # self.detecting = False
         red.set('conveyor','reverse')
+        count=0
         while not rospy.is_shutdown() and self.detecting:
-            server_url = "opc.tcp://192.168.7.60:4880"
-            client = op.Client(server_url)
+            try:
+                count+=1
+                if count==1:
+                    print("dojn")
+                    server_url = "opc.tcp://192.168.7.60:4880"
+                    client = op.Client(server_url)
+                else:
+                    print("deon")
+                    self.detecting=False
+                    if self.a_server.is_preempt_requested():
+                        rospy.loginfo('Preempted ArucoDetection')
+                        
+
+                        self.a_server.set_preempted()
+                        self.detecting = False
+                        print(bool(s))
+                        return
+
+            except:
+                print("deon")
+                self.detecting=False
+                if self.a_server.is_preempt_requested():
+                    rospy.loginfo('Preempted ArucoDetection')
+                    
+
+                    self.a_server.set_preempted()
+                    self.detecting = False
+                    print(bool(s))
+                    return
 
             try:
                 client.connect()

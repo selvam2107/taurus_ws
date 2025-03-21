@@ -50,6 +50,7 @@ class motoraction:
                 if no_obstacle=='yes':
                     twist.linear.x=0
                     self.cmd_vel_pub.publish(twist)
+                    print("ty")
                     
                 else:
                     twist.linear.x=-0.1
@@ -101,7 +102,7 @@ class motoraction:
                 if 0.05<=range_distance<=0.6:
                     no_obstacle='yes'
                     print(angle,range_distance)
-                    # print("ejhb")
+                    print("ejhb")
                     return no_obstacle
             if -1.65<=angle<=-1.45:
                 if 0.05<=range_distance<=1:   

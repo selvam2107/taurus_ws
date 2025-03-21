@@ -57,6 +57,7 @@ try:
 
 except Exception as e:
     print('error',e)
+    
     # new_value = 42
     # node.set_value(new_value, ua.VariantType.Int32)
     # print(f"New value of node {node_id}: {node.get_value()}")

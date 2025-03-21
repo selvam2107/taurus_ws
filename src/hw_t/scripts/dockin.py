@@ -82,20 +82,27 @@ class ScanActionServer:
             # if s==0:
             #     self.detecting = False
 
-            if (distance <900):
-                if 0.6<=angle<=0.62 and range_distance>1.5 and (red.get('a')!=b'go'):
+            # if (distance <900):
+            if 0.6<=angle<=0.62 and range_distance>1.5 and (red.get('w')==b'e'):
                     print(range_distance,angle)
                     distance=red.get('distance')
                     distance=int(distance)
-                    
+                    rospy.set_param("/distance_goal_qr", 1)
+                    red.set('w','s')
                     # si=red.get('dock')
                     # si=int(si)
                     # si=si+1
 
                     # red.set('dock',str(si))
                     self.detecting = False
-          
-            
+            if 0.6<=angle<=0.62 and range_distance<0.2:
+                s+=1
+                if s<=100:
+                    rospy.set_param("/distance_goal_qr", s)
+                m=rospy.get_param("/distance_goal_qr")
+                print(m)
+                if m>=100:
+                    red.set('w','e')
                 
             if -1.30<=angle<=-0.65 and red.get('a')==b'go':
             
@@ -137,7 +144,7 @@ class ScanActionServer:
                         # twist.linear.x=0
                         self.cmd_vel_pub.publish(twist)
                         print("rotatinge sg")
-                        # print(f"Angle: {angle:.2f} radians, Distance: {range_distance:.2f} meters")
+                        print(f"Angle: {angle:.2f} radians, Distance: {range_distance:.2f} meters")
                     
 
                     

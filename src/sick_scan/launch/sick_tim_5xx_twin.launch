@@ -14,8 +14,8 @@
 
 -->
 <launch>
-    <arg name="hostname1" default="192.168.0.1"/>
-    <arg name="hostname2" default="192.168.0.2"/>
+    <arg name="hostname1" default="192.168.7.10"/>
+    <arg name="hostname2" default="192.168.7.11"/>
     <arg name="frame_id1" default="sick_link1"/>
     <arg name="frame_id2" default="sick_link2"/>
 
