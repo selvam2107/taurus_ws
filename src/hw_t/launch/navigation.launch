@@ -29,7 +29,7 @@
   
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
   </node>
-   <node pkg="map_server" name="map_server1" type="map_server" args="/root/react-ros-robot1/flask-backend/maps/17_march_25_r.yaml">
+   <node pkg="map_server" name="map_server1" type="map_server" args=" /root/react-ros-robot1/flask-backend/maps/17_march_25_r.yaml">
   <remap from='map' to="map2"/>
  </node>
  <!-- /root/react-ros-robot1/flask-backend/maps/map_20_11.yaml -->
@@ -66,13 +66,13 @@
   <include file="$(find hw_t)/launch/camera2.launch"/>
     <node pkg="hw_t" type="dep.py" name="distance"></node>
  
- <node pkg="hw_t" type="back_action.py" name="back"></node>
+ <node pkg="hw_t" type="back_action2.py" name="back"></node>
  <node pkg="hw_t" type="conveyor_red.py" name="conveyor"></node>
  <node pkg="hw_t" type="taurusdata1.py" name="data_storing"></node>
  <node pkg="hw_t" type="send_initialpose.py" name="auto_pose"></node>
  <node pkg="hw_t" type="save_initialpose.py" name="pose_saver"></node>
  <node pkg="robot_control" type="scanComponent_server.py" name="cobot"></node>
- <!-- <node pkg="hw_t" type="b.py" name="docking"></node> -->
+ <node pkg="hw_t" type="dockin.py" name="docking"></node>
      
     <!-- <node pkg="tf" type="static_transform_publisher" name="base_to_odom" args="0 0 0 0 0 0 /odom /base_link 100"/> -->
   <!-- <include file="$(find hw_t)/launch/robo_ekf.launch"/>  -->

@@ -27,6 +27,9 @@
         	/taurus/joints_update
             /taurus/mobile_base_controller" >
   </node>
+  <!-- <include file="$(find xsens_driver)/launch/xsens_driver.launch"/>  
+      <node name="ekf_localization" pkg="robot_localization" type="ekf_localization_node"  >
+    <rosparam command="load" file="$(find hw_t)/config/ekf.yaml" /></node> -->
 
   <!--<node name="telop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py"/>-->
  

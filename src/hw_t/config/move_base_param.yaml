@@ -5,7 +5,7 @@ planner_patience: 40
 max_planning_retries: 10
 controller_patience: 30
 conservative_reset_dist: 30
-planner_frequency: 0
+planner_frequency: 0.1
 oscillation_timeout: 30
 oscillation_distance: 3
 allow_unknown: false

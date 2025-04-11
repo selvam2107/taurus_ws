@@ -95,15 +95,48 @@ class ScanActionServer:
 
                     # red.set('dock',str(si))
                     self.detecting = False
-            if 0.6<=angle<=0.62 and range_distance<0.2:
+            if 0.60<=angle<=0.62 and 0.02<=range_distance<=0.5:
                 s+=1
-                if s<=100:
+                if s<=70:
                     rospy.set_param("/distance_goal_qr", s)
                 m=rospy.get_param("/distance_goal_qr")
                 print(m)
-                if m>=100:
+                if m>=70:
+                    red.set("a","w")
                     red.set('w','e')
-                
+            if -1.30<=angle<=-0.65 and red.get('a')==b'w':
+            
+                    if range_distance==0:
+                        continue
+                    if 0.05<=range_distance<=0.5:
+                        twist.angular.z=-0.0
+                        twist.linear.x=0
+                        self.cmd_vel_pub.publish(twist)
+                        print("rotatinge2")
+                        # print(f"Angle: {angle:.2f} radians, Distance: {range_distance:.2f} meters1")
+                        return
+            if -1.81<=angle<=-1.30 and red.get('a')==b'w':
+            
+                    if range_distance==0:
+                        continue
+                    if 0.05<=range_distance<=0.5:
+                        twist.angular.z=-0.0
+                        twist.linear.x=0
+                        self.cmd_vel_pub.publish(twist)
+                        print("rotatinge2")
+                        # print(f"Angle: {angle:.2f} radians, Distance: {range_distance:.2f} meters1")
+                        return
+            if -2.18<=angle<=-1.81 and red.get('a')==b'w':
+            
+                    if range_distance==0:
+                        continue
+                    if 0.05<=range_distance<=1:
+                        twist.angular.z=-0.0
+                        twist.linear.x=0
+                        self.cmd_vel_pub.publish(twist)
+                        print("rotatinge2")
+                        # print(f"Angle: {angle:.2f} radians, Distance: {range_distance:.2f} meters1")
+                        return
             if -1.30<=angle<=-0.65 and red.get('a')==b'go':
             
                     if range_distance==0:
@@ -123,7 +156,7 @@ class ScanActionServer:
                     continue
                     print("hitting ")
                 elif 0.10 <= range_distance <= 0.11:
-                    red.set("a","w")
+                    # red.set("a","w")
                     print("set redis")
                     twist.angular.z = 0
                     twist.linear.x = 0.07
@@ -132,7 +165,7 @@ class ScanActionServer:
                     return
                 elif 0.02 < range_distance <= 0.7:
                     if range_distance>=0.12:
-                      red.set("a","w")
+                    #   red.set("a","w")
                       twist.angular.z = 0.01
                     #   twist.linear.x=0.0
                     #   print(f"Angle: {angle:.2f} radians, Distance: {range_distance:.2f} check")
