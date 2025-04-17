@@ -25,6 +25,7 @@ class ScanActionServer:
         self.a_server.start()
     def execute_cb(self, goal):
         self.goal = goal  # Set the goal attribute
+        rospy.set_param('/navigation',4)
         self.feedback = aruco_detectFeedback()
         self.result = aruco_detectResult()
         self.detecting = True  # Start detecting when a goal is received
@@ -72,6 +73,7 @@ class ScanActionServer:
         print(s)
         if s==0:
             self.detecting = False
+            rospy.set_param('/navigation',1)
 
         for i, range_distance in enumerate(scan_data.ranges):
             angle = scan_data.angle_min + i * scan_data.angle_increment
@@ -89,6 +91,7 @@ class ScanActionServer:
                     distance=int(distance)
                     rospy.set_param("/distance_goal_qr", 1)
                     red.set('w','s')
+                    rospy.set_param('/navigation',1)
                     # si=red.get('dock')
                     # si=int(si)
                     # si=si+1

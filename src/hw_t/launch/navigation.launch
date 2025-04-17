@@ -73,6 +73,7 @@
  <node pkg="hw_t" type="save_initialpose.py" name="pose_saver"></node>
  <node pkg="robot_control" type="scanComponent_server.py" name="cobot"></node>
  <node pkg="hw_t" type="dockin.py" name="docking"></node>
+  <!-- <node pkg="hw_t" type="navi_param.py" name="nav_light"></node> -->
      
     <!-- <node pkg="tf" type="static_transform_publisher" name="base_to_odom" args="0 0 0 0 0 0 /odom /base_link 100"/> -->
   <!-- <include file="$(find hw_t)/launch/robo_ekf.launch"/>  -->

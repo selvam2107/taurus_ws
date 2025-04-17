@@ -35,6 +35,7 @@ class MotorAction:
         return math.sqrt((end[0] - start[0])**2 + (end[1] - start[1])**2)
 
     def execute_cb(self, goal):
+        rospy.set_param('/navigation',4)
         self.goal = goal
         self.feedback = aruco_detectFeedback()
         self.result = aruco_detectResult()
@@ -50,6 +51,7 @@ class MotorAction:
                 if r == 0:
                     self.a_server.set_preempted()
                     self.detecting = False
+                    rospy.set_param('/navigation',1)
                     return
                 
                 rospy.Subscriber("/scan_2", LaserScan, self.callback)
@@ -69,6 +71,7 @@ class MotorAction:
             self.result.distance_reached = "pick/drop completed"
             self.a_server.set_succeeded(self.result)
             self.detecting = False
+            rospy.set_param('/navigation',1)
             return
 
     def callback(self, scan_data):
