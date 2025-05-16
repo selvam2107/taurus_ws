@@ -35,7 +35,7 @@ def donecb(goalstatus,result):
 	done= True
 count=0
 waypoints=[]
-list1=[12,13]
+list1=[13,14]
 def movebase_client(x):
             global waypoints,list1
             m1=[]
@@ -256,8 +256,8 @@ class pick(State):
 
 
     def execute(self, userdata):
-            red.set("conveyor","pick")
-            while red.get('conveyor')==b'pick':
+            red.set("follow","on")
+            while red.get('follow')==b'on':
                 pass
             # green_pin.write(True)
             # grey_pin.write(True) 
@@ -320,14 +320,14 @@ if __name__ == '__main__':
     with patrol:
         print("state execution")
         StateMachine.add('ONE',one(waypoints[0][0],waypoints[0][1]),transitions={'success1':'TWO','success':'TWO','cancelled':'ONE'},remapping={'input':'inpt'})
-        StateMachine.add('TWO',two(waypoints[1][0],waypoints[1][1]),transitions={'success1':'ONE','success':'ONE','cancelled':'TWO'},remapping={'input':'inpt'})
+        StateMachine.add('TWO',two(waypoints[1][0],waypoints[1][1]),transitions={'success1':'PICK','success':'PICK','cancelled':'TWO'},remapping={'input':'inpt'})
         StateMachine.add('ONE_D',one(waypoints[0][0],waypoints[0][1]),transitions={'success1':'ONE_D','success':'CAMERA1','cancelled':'ONE_D'},remapping={'input':'inpt'})
         StateMachine.add('TWO_D',two(waypoints[1][0],waypoints[1][1]),transitions={'success1':'ONE','success':'ONE','cancelled':'TWO_D'},remapping={'input':'inpt'})
 
         StateMachine.add('CAMERA',qr_camera(),transitions={'done':'BACK','not done':'BACK'})
         StateMachine.add('CAMERA1',qr_camera(),transitions={'done':'DROP','not done':'CAMERA1'})
         # StateMachine.add('THREE',three(),transitions={'success1':'ONE','success':'ONE','cancelled':'THREE'},remapping={'input':'inpt'})
-        StateMachine.add('PICK',pick(),transitions={'picking':'BACK'})
+        StateMachine.add('PICK',pick(),transitions={'picking':'ONE'})
         StateMachine.add('DROP',drop(),transitions={'picking':'BACK1'})
         StateMachine.add('BACK',back(),transitions={'success':'TWO'})
         StateMachine.add('BACK1',back(),transitions={'success':'TWO_D'})

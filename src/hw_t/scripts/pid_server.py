@@ -7,7 +7,8 @@ from nav_msgs.msg import Path
 import tf
 from tf.transformations import euler_from_quaternion
 import redis
-
+import actionlib
+from hw_t.msg import aruco_detectAction, aruco_detectFeedback, aruco_detectResult
 red = redis.Redis(host='localhost', port=6379)
 
 class Task:
@@ -30,16 +31,18 @@ class Task:
         self.last_err_angular = 0
         self.integral_err_angular = 0
 
-        self.path_sub = rospy.Subscriber('/path', Path, self.path_callback)
-        self.cmd_vel = rospy.Publisher('/robot/cmd_vel', Twist, queue_size=1)
+        
+        self.cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 
         self.listener = tf.TransformListener()
+        self.path_sub = rospy.Subscriber('/path', Path, self.path_callback)
+        # Action server (added only this)
+        self.server = actionlib.SimpleActionServer('go_to_path', aruco_detectAction, self.execute_cb, False)
+        self.server.start()
 
     def path_callback(self, msg):
         self.path = [(pose.pose.position.x, pose.pose.position.y) for pose in msg.poses]
         self.path.reverse()
-        # rospy.set_param('/path_done',4)
-        # self.move()
         rospy.loginfo("Path received: {} waypoints".format(len(self.path)))
 
     def get_distance(self, x1, y1, x2, y2):
@@ -64,16 +67,15 @@ class Task:
 
             goal_yaw = self.get_angle(current_x, current_y, goal_x, goal_y)
             yaw_error = goal_yaw - current_yaw
-            yaw_error = (yaw_error + pi) % (2 * pi) - pi  # Normalize angle
+            yaw_error = (yaw_error + pi) % (2 * pi) - pi
 
-            if fabs(yaw_error) < 0.01:
+            if fabs(yaw_error) < 0.05:
                 break
 
             angular_velocity, self.last_err_angular, self.integral_err_angular = self.pid_control(
                 yaw_error, self.last_err_angular, self.integral_err_angular,
                 self.kp_angular, self.kd_angular, self.ki_angular
             )
-
             twist = Twist()
             twist.angular.z = angular_velocity
             self.cmd_vel.publish(twist)
@@ -82,50 +84,52 @@ class Task:
         self.cmd_vel.publish(Twist())
 
     def move_to_waypoint(self, goal_x, goal_y):
-    rate = rospy.Rate(100)
-    while not rospy.is_shutdown():
-        current_x, current_y, current_yaw = self.get_current_pose()
-        if current_x is None:
+        rate = rospy.Rate(200)
+        while not rospy.is_shutdown():
+            current_x, current_y, current_yaw = self.get_current_pose()
+            if current_x is None:
+                rate.sleep()
+                continue
+
+            distance_error = self.get_distance(current_x, current_y, goal_x, goal_y)
+            goal_yaw = self.get_angle(current_x, current_y, goal_x, goal_y)
+            yaw_error = goal_yaw - current_yaw
+            yaw_error = (yaw_error + pi) % (2 * pi) - pi
+
+            x_reached = abs(current_x - goal_x) <= 1.0
+            if x_reached:
+                print('reache way point')
+                break
+
+            lateral_tolerance = 1
+            angular_tolerance = 1.5
+            dx = goal_x - current_x
+            dy = goal_y - current_y
+            path_angle = atan2(dy, dx)
+            perpendicular_error = -(current_x - goal_x) * sin(path_angle) + (current_y - goal_y) * cos(path_angle)
+
+            reduce_angular = fabs(perpendicular_error) < lateral_tolerance and fabs(yaw_error) < angular_tolerance
+
+            linear_velocity, self.last_err_linear, self.integral_err_linear = self.pid_control(
+                distance_error, self.last_err_linear, self.integral_err_linear,
+                self.kp_linear, self.kd_linear, self.ki_linear
+            )
+
+            if reduce_angular:
+                angular_velocity = 0
+            else:
+                angular_velocity, self.last_err_angular, self.integral_err_angular = self.pid_control(
+                    yaw_error, self.last_err_angular, self.integral_err_angular,
+                    self.kp_angular, self.kd_angular, self.ki_angular
+                )
+
+            twist = Twist()
+            twist.linear.x = min(linear_velocity, 0.2)
+            twist.angular.z = angular_velocity
+            self.cmd_vel.publish(twist)
             rate.sleep()
-            continue
 
-        distance_error = self.get_distance(current_x, current_y, goal_x, goal_y)
-        goal_yaw = self.get_angle(current_x, current_y, goal_x, goal_y)
-        yaw_error = goal_yaw - current_yaw
-        yaw_error = (yaw_error + pi) % (2 * pi) - pi
-
-        # Stop if close enough
-        if distance_error < 0.05:  # 5 cm tolerance
-            rospy.loginfo("Reached waypoint.")
-            break
-
-        # PID calculations
-        linear_velocity, self.last_err_linear, self.integral_err_linear = self.pid_control(
-            distance_error, self.last_err_linear, self.integral_err_linear,
-            self.kp_linear, self.kd_linear, self.ki_linear
-        )
-
-        angular_velocity, self.last_err_angular, self.integral_err_angular = self.pid_control(
-            yaw_error, self.last_err_angular, self.integral_err_angular,
-            self.kp_angular, self.kd_angular, self.ki_angular
-        )
-
-        # --- Scale linear speed based on yaw error ---
-        yaw_scale = max(0.0, cos(yaw_error))  # Prevent backward motion
-        linear_velocity *= yaw_scale
-
-        twist = Twist()
-        twist.linear.x = min(linear_velocity, 0.2)  # Cap speed
-        twist.angular.z = angular_velocity
-        self.cmd_vel.publish(twist)
-
-        rate.sleep()
-
-    self.cmd_vel.publish(Twist())  # Stop after reaching waypoint
-
-
-
-        # self.cmd_vel.publish(Twist())
+        self.cmd_vel.publish(Twist())
 
     def get_current_pose(self):
         try:
@@ -133,8 +137,7 @@ class Task:
             roll, pitch, yaw = euler_from_quaternion(rot)
             return trans[0], trans[1], yaw
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            # self.get_current_pose()
-            print("falied")
+            print("failed")
             return None, None, None
 
     def move(self):
@@ -146,6 +149,18 @@ class Task:
             self.current_waypoint += 1
             rate.sleep()
 
+    def execute_cb(self, goal):
+        rospy.loginfo("Action server activated. Executing path from topic.")
+        self.current_waypoint = 0
+        
+        feedback = aruco_detectFeedback()
+        result = aruco_detectResult()
+
+        self.move()
+
+        result.distance_reached = "docking done"
+        self.server.set_succeeded(result)
+
     def shutdown(self):
         rospy.loginfo("Stopping the robot...")
         self.cmd_vel.publish(Twist())
@@ -153,5 +168,4 @@ class Task:
 
 if __name__ == '__main__':
     task = Task()
-    rospy.sleep(1)
-    task.move()
+    rospy.spin()

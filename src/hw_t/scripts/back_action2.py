@@ -51,7 +51,7 @@ class MotorAction:
                 if r == 0:
                     self.a_server.set_preempted()
                     self.detecting = False
-                    rospy.set_param('/navigation',1)
+                    rospy.set_param('/navigation',2)
                     return
                 
                 rospy.Subscriber("/scan_2", LaserScan, self.callback)
@@ -71,7 +71,7 @@ class MotorAction:
             self.result.distance_reached = "pick/drop completed"
             self.a_server.set_succeeded(self.result)
             self.detecting = False
-            rospy.set_param('/navigation',1)
+            rospy.set_param('/navigation',2)
             return
 
     def callback(self, scan_data):

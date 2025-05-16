@@ -3,13 +3,13 @@ LocalPlannerAdapter:
   planner_name: dwb_local_planner::DWBLocalPlanner
 DWBLocalPlanner:
   # Robot configuration
-  max_vel_x:  0.7 #0.7
+  max_vel_x:  0.5 #0.7
   min_vel_x: -0.2
 
   max_vel_y: 0.0  # diff drive robot
   min_vel_y: 0.0  # diff drive robot
 
-  max_speed_xy: 0.7   #0.7 # max_trans_vel: 0.8  # choose slightly less than the base's capability
+  max_speed_xy: 0.5   #0.7 # max_trans_vel: 0.8  # choose slightly less than the base's capability
   min_speed_xy: 0.05    # min_trans_vel: 0.1  # this is the min trans velocity when there is negligible rotational velocity
 
   max_vel_theta: 0.5  #0.6  # max_rot_vel: 1.0  # choose slightly less than the base's capability
@@ -33,7 +33,7 @@ DWBLocalPlanner:
 
   # Forward simulation (trajectory generation)
   trajectory_generator_name: dwb_plugins::StandardTrajectoryGenerator # or dwb_plugins::LimitedAccelGenerator
-  sim_time: 1.8 #2.8
+  sim_time: 2.5 #2.8 #1.5
   vx_samples: 15
   vy_samples: 1       # diff drive robot, there is only one sample
   vtheta_samples: 15

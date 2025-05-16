@@ -8,7 +8,7 @@ from geometry_msgs.msg import Twist
 import redis
 import actionlib
 from robot_control.msg import aruco_detectAction, aruco_detectFeedback, aruco_detectResult
-red=redis.Redis(host='localhost',port=6379)
+red=redis.Redis(host='192.168.5.8',port=6379)
 import time
 # import move2
 class motoraction:
@@ -98,16 +98,39 @@ class motoraction:
                     value1 = node.get_value()[:20]
                     print(value1)
                 if s==1:
-                    value[39] = 1
+                    value[19] = 1
+                    print("ihgi")
                     node.set_value(value, ua.VariantType.Int16)
-                    time.sleep(2)
+                    # time.sleep(2)
                     while True:
                         value = node.get_value()
-                        value_41 = value[39]
+                        value_41 = value[19]
+                        # value = node.get_value()
+                        # value_21 = value[20]
                         print(value_41)
                         if value_41==1:
                             # print("complted")
                             pass
+                        
+                            
+                        else:
+                            break
+                    red.set('camera','ready')
+                    while red.get('camera')==b'ready':
+                        pass
+                    value[20]=1
+                    node.set_value(value, ua.VariantType.Int16)
+                    while True:
+                        value = node.get_value()
+                        value_41 = value[20]
+                        # value = node.get_value()
+                        # value_21 = value[20]
+                        print(value_41)
+                        if value_41==1:
+                            # print("complted")
+                            pass
+                        
+                            
                         else:
                             break
                 if s==2:
@@ -150,7 +173,7 @@ class motoraction:
             self.a_server.set_aborted(self.result)
 if __name__ == '__main__':
     rospy.init_node("conveyor", anonymous=True)
-    red = redis.Redis(host='localhost', port='6379')
+    red = redis.Redis(host='192.168.5.8', port='6379')
 
     # calib_data_path = "/home/ssapl/testbot1_ws/src/hw_t/calib_data/MultiMatrix.npz"
     # # marker_size = 6.5  # centimeters

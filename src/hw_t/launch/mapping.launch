@@ -16,9 +16,9 @@
     <arg name="hostname1" value="$(arg lidar_ip)"/>
     <!-- <arg name="hostname2" value="$(arg lidar_ip1)"/> -->
   </include>
-   <include file="$(find xsens_driver)/launch/xsens_driver.launch"/>  
+   <!-- <include file="$(find xsens_driver)/launch/xsens_driver.launch"/>  
       <node name="ekf_localization" pkg="robot_localization" type="ekf_localization_node"  >
-    <rosparam command="load" file="$(find hw_t)/config/ekf.yaml" /></node>
+    <rosparam command="load" file="$(find hw_t)/config/ekf.yaml" /></node> -->
   <!-- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/> 
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" output="screen"/> -->
 <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping"  output="screen">

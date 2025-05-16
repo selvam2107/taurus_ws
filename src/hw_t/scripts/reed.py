@@ -57,7 +57,7 @@ class ScanActionServer:
             angle = scan_data.angle_min + i * scan_data.angle_increment
             # print(angle)
             # print(angle,range_distance)
-            if -1.81 <= angle <= -1.30 and 0.5<=range_distance<=1:                # print("eduhvu")
+            if 0.6<=angle<=0.62 :                # print("eduhvu")
                 print(angle,range_distance)
             # if -2.08<=angle<=-2.0:
             #     print(angle,range_distance)

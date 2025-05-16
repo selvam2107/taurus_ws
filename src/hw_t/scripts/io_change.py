@@ -27,14 +27,14 @@ try:
             OUTPUT_INDEX = 18  # DO0 = 16, DO1 = 17, DO2 = 18, etc.
             client.write_coil(OUTPUT_INDEX, False)  # Turn ON
         # client.write_coil(OUTPUT_INDEX, False)  # Turn OFF
-        if n==3:
+        if n==2:
             OUTPUT_INDEX = 19  # DO0 = 16, DO1 = 17, DO2 = 18, etc.
             client.write_coil(OUTPUT_INDEX, False)
             OUTPUT_INDEX = 17  # DO0 = 16, DO1 = 17, DO2 = 18, etc.
             client.write_coil(OUTPUT_INDEX, False)
             OUTPUT_INDEX = 18  # DO0 = 16, DO1 = 17, DO2 = 18, etc.
             client.write_coil(OUTPUT_INDEX, True)
-        if n==2:
+        if n==3:
             OUTPUT_INDEX = 17  # DO0 = 16, DO1 = 17, DO2 = 18, etc.
             client.write_coil(OUTPUT_INDEX, False)
             OUTPUT_INDEX = 19  # DO0 = 16, DO1 = 17, DO2 = 18, etc.
