@@ -1,15 +1,15 @@
 
 #!/usr/bin/env   python3.6
 
-from pymodbus.client.sync import ModbusSerialClient as client
+from pymodbus.client import ModbusSerialClient as client
 from pymodbus.payload import BinaryPayloadDecoder as dec
 from pymodbus.constants import Endian
 from std_msgs.msg import Int32
 from std_msgs.msg import String
 import time
-import redis
+# import redis
 import rospy
-red= redis.Redis(host= 'localhost',port= '6379')
+# red= redis.Redis(host= 'localhost',port= '6379')
 def two_cmp(val, bits):
     if val > 2**(bits-1):
             #val = val - 4294967296
@@ -160,7 +160,7 @@ def readAlarm(slave):
 
             if i==20:
                 a=getEncoder()
-                red.set('')
+                # red.set('')
                 pub1.publish("please release emergrncy button and start navigation")
                 print("----emregency pessed-----")
                 input("----release and press any key to continue ---")
@@ -205,9 +205,10 @@ def brakeStatus(slave):
 
 def setSpeed(motor_add,speed1,speed2):
     if (motor_add&10):
+        print("eghi")
         longWrite(add=342, value=speed2, slave=2)
     if (motor_add &1):
-        # print("turning2")
+        print("turning2")
         longWrite(add=342, value=speed1, slave=1)
     
 
@@ -246,7 +247,7 @@ def getStatus(slave):
     lst= getBits(val,32)
     return lst
 
-mod = client(method='rtu', timeout=0.03, parity='N', baudrate=19200,port='/dev/ttyUSB0')
+mod = client(method='rtu', timeout=0.03, parity='N', baudrate=9600,port='/dev/ttyUSB0')
 print("Motor connection status: ",mod.connect())
 time.sleep(0.2)
 # rospy.init_node('motor_status')
@@ -257,4 +258,7 @@ time.sleep(0.2)
 left=2
 right=1
 motor_status=0
-resetAlarm()
+# resetAlarm()
+startJog()
+setSpeed(11,8000,8000)
+stopJog()
