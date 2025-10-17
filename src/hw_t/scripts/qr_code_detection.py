@@ -17,7 +17,7 @@ class QRCodeDetector:
         rospy.init_node('qr_code_detector', anonymous=True)
 
         self.bridge = CvBridge()
-
+	print("Test")
         
         self.result1=0
         # Physical size of the QR code in meters (replace with the actual size)
